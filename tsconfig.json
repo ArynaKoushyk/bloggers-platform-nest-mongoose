@@ -17,6 +17,7 @@
       "@app/*": ["./src/app/*"],
       "@lib/*": ["./src/lib/*"]
     },
+    "strictPropertyInitialization": false,
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": true,
