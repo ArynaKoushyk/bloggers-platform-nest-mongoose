@@ -1,7 +1,7 @@
 import { BaseQueryParams } from '../../../../../core/dto/base-query-params.input-dto';
-import { BlogsSortBy } from './blogs-sort-by';
+import { BlogSortField } from './blogs-sort-by';
 
 export class GetBlogQueryParams extends BaseQueryParams {
-  sortBy = BlogsSortBy.CreatedAt;
+  sortBy = BlogSortField.CreatedAt;
   searchNameTerm: string | null = null;
 }

@@ -21,7 +21,7 @@ export class BlogsService {
     return createdBlog._id.toString();
   }
   async updateBlog(id: string, dto: UpdateBlogDto): Promise<string> {
-    const blog = await this.blogsRepository.findByIdOrThrow(id);
+    const blog = await this.blogsRepository.findByIdOrFail(id);
     blog.update(dto);
     await this.blogsRepository.save(blog);
 
@@ -29,7 +29,7 @@ export class BlogsService {
   }
 
   async deleteBlog(id: string): Promise<void> {
-    const blog = await this.blogsRepository.findByIdOrThrow(id);
+    const blog = await this.blogsRepository.findByIdOrFail(id);
     blog.makeDeleted();
     await this.blogsRepository.save(blog);
   }

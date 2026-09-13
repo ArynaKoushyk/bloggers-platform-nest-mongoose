@@ -31,6 +31,9 @@ export class DomainHttpExceptionsFilter implements ExceptionFilter {
       case DomainExceptionCode.PasswordRecoveryCodeExpired:
         return HttpStatus.BAD_REQUEST;
 
+      case DomainExceptionCode.Conflict:
+        return HttpStatus.CONFLICT;
+
       case DomainExceptionCode.Forbidden:
         return HttpStatus.FORBIDDEN;
 

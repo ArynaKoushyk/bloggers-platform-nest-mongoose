@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -16,11 +18,15 @@ import { GetBlogQueryParams } from './input-dto/get-blogs-query-params.input-dto
 import { PaginatedViewDto } from '../../../../core/dto/base-paginated.view-dto';
 import { CreateBlogInputDto } from './input-dto/create-blog.input-dto';
 import { UpdateBlogInputDto } from './input-dto/update-blog.input-dto';
+import { GetPostsQueryParams } from '../../posts/api/input-dto/get-posts-query-params.input-dto';
+import { PostViewDto } from '../../posts/api/view-dto/post.view-dto';
+import { PostsQueryRepository } from '../../posts/infrastructure/query/posts.query-repository';
 
 @Controller('blogs')
 export class BlogsController {
   constructor(
     private blogsQueryRepository: BlogsQueryRepository,
+    private postsQueryRepository: PostsQueryRepository,
     private blogsService: BlogsService,
   ) {
     console.log('BlogsController created');
@@ -31,7 +37,7 @@ export class BlogsController {
   async getBlogById(@Param('id') id: string): Promise<BlogViewDto> {
     // можем и чаще так и делаем возвращать Promise из action. Сам NestJS будет дожидаться, когда
     // промис зарезолвится и затем NestJS вернёт результат клиенту
-    return this.blogsQueryRepository.findByIdOrThrow(id);
+    return this.blogsQueryRepository.findByIdOrFail(id);
   }
 
   @Get()
@@ -41,25 +47,36 @@ export class BlogsController {
     return this.blogsQueryRepository.getAll(query);
   }
 
+  @Get('/:blogId/posts')
+  async getAllPostsByBlogId(
+    @Param('blogId') blogId: string,
+    @Query() query: GetPostsQueryParams,
+  ): Promise<PaginatedViewDto<PostViewDto[]>> {
+    await this.blogsQueryRepository.findByIdOrFail(blogId);
+    return this.postsQueryRepository.findAllByBlogId(blogId, query);
+  }
+
   @Post()
   async createBlog(@Body() dto: CreateBlogInputDto): Promise<BlogViewDto> {
     const blogId = await this.blogsService.createBlog(dto);
 
-    return this.blogsQueryRepository.findByIdOrThrow(blogId);
+    return this.blogsQueryRepository.findByIdOrFail(blogId);
   }
 
   @Put(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   async updateBlog(
     @Param('id') id: string,
     @Body() body: UpdateBlogInputDto,
   ): Promise<BlogViewDto> {
     const blogId = await this.blogsService.updateBlog(id, body);
 
-    return this.blogsQueryRepository.findByIdOrThrow(blogId);
+    return this.blogsQueryRepository.findByIdOrFail(blogId);
   }
 
   @ApiParam({ name: 'id' }) //для сваггера
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   async deleteBlog(@Param('id') id: string): Promise<void> {
     return this.blogsService.deleteBlog(id);
   }
