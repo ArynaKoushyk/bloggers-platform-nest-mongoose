@@ -1,9 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Model } from 'mongoose';
-import { CreatePostDto } from '../dto/create-post.dto';
-import { UpdatePostDto } from '../dto/update-post.dto';
 import { DomainException } from '../../../../core/exceptions/domain-exceptions';
 import { DomainExceptionCode } from '../../../../core/exceptions/domain-exception-codes';
+import { CreatePostDomainDto } from './dto/create-post.domain.dto';
+import { UpdatePostDomainDto } from './dto/update-post.domain.dto';
 
 @Schema({ timestamps: true, collection: 'posts' })
 export class Post {
@@ -34,7 +34,7 @@ export class Post {
   @Prop({ type: Date, nullable: true, default: null })
   deletedAt: Date | null;
 
-  static createInstance(dto: CreatePostDto): PostDocument {
+  static createInstance(dto: CreatePostDomainDto): PostDocument {
     const { title, shortDescription, content, blogId, blogName } = dto;
     const post = new this();
 
@@ -47,7 +47,7 @@ export class Post {
     return post as PostDocument;
   }
 
-  update(dto: UpdatePostDto): void {
+  update(dto: UpdatePostDomainDto): void {
     const { title, shortDescription, content, blogId, blogName } = dto;
     this.title = title;
     this.shortDescription = shortDescription;

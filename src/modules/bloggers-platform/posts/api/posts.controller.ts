@@ -53,10 +53,8 @@ export class PostsController {
   async updatePost(
     @Param('id') id: string,
     @Body() body: UpdatePostInputDto,
-  ): Promise<PostViewDto> {
-    const postId = await this.postsService.updatePost(id, body);
-
-    return this.postsQueryRepository.findByIdOrFail(postId);
+  ): Promise<void> {
+    await this.postsService.updatePost(id, body);
   }
 
   @ApiParam({ name: 'id' })

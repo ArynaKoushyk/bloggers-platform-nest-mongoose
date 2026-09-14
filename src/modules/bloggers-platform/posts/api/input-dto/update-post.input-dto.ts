@@ -4,5 +4,4 @@ export class UpdatePostInputDto implements UpdatePostDto {
   shortDescription: string;
   content: string;
   blogId: string;
-  blogName: string;
 }

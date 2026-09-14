@@ -1,6 +1,5 @@
-export class UpdatePostDto {
+export class CreatePostForBlogInputDto {
   title: string;
   shortDescription: string;
   content: string;
-  blogId: string;
 }

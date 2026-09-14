@@ -5,5 +5,4 @@ export class CreatePostInputDto implements CreatePostDto {
   shortDescription: string;
   content: string;
   blogId: string;
-  blogName: string;
 }
