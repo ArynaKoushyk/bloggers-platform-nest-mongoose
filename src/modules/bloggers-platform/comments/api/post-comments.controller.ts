@@ -1,0 +1,24 @@
+import { Controller, Get, Param, Query } from '@nestjs/common';
+import { PaginatedViewDto } from '../../../../core/dto/base-paginated.view-dto';
+import { PostsQueryRepository } from '../../posts/infrastructure/query/posts.query-repository';
+import { CommentsQueryRepository } from '../infrastructure/query/comments.query-repository';
+import { GetCommentsQueryParams } from './input-dto/get-comments-query-params.input-dto';
+import { CommentViewDto } from './view-dto/comment.view-dto';
+
+@Controller('posts/:postId/comments')
+export class PostCommentsController {
+  constructor(
+    private readonly postsQueryRepository: PostsQueryRepository,
+    private readonly commentsQueryRepository: CommentsQueryRepository,
+  ) {}
+
+  @Get()
+  async getCommentsByPostId(
+    @Param('postId') postId: string,
+    @Query() query: GetCommentsQueryParams,
+  ): Promise<PaginatedViewDto<CommentViewDto[]>> {
+    await this.postsQueryRepository.findByIdOrFail(postId);
+
+    return this.commentsQueryRepository.findCommentsByPostId(postId, query);
+  }
+}

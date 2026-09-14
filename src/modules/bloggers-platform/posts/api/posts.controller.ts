@@ -25,7 +25,7 @@ export class PostsController {
     private postsQueryRepository: PostsQueryRepository,
     private postsService: PostsService,
   ) {
-    console.log('BlogsController created');
+    console.log('PostsController created');
   }
 
   @ApiParam({ name: 'id' })

@@ -23,7 +23,7 @@ export class BlogPostsController {
   ): Promise<PaginatedViewDto<PostViewDto[]>> {
     await this.blogsQueryRepository.findByIdOrFail(blogId);
 
-    return this.postsQueryRepository.findAllByBlogId(blogId, query);
+    return this.postsQueryRepository.findPostsByBlogId(blogId, query);
   }
 
   @Post()

@@ -22,7 +22,7 @@ export class Blog {
   @Prop({ type: Boolean, required: true, default: false })
   isMembership!: boolean;
 
-  @Prop({ type: Date, nullable: true, default: null })
+  @Prop({ type: Date, default: null })
   deletedAt: Date | null;
 
   static createInstance(dto: CreateBlogDto): BlogDocument {

@@ -53,7 +53,7 @@ export class PostsQueryRepository {
     return PostViewDto.mapToView(post);
   }
 
-  async findAllByBlogId(
+  async findPostsByBlogId(
     blogId: string,
     query: GetPostsQueryParams,
   ): Promise<PaginatedViewDto<PostViewDto[]>> {

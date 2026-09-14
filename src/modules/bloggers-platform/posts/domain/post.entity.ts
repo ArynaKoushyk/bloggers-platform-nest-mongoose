@@ -31,7 +31,7 @@ export class Post {
   @Prop({ type: Number, required: true, default: 0 })
   dislikesCount: number;
 
-  @Prop({ type: Date, nullable: true, default: null })
+  @Prop({ type: Date, default: null })
   deletedAt: Date | null;
 
   static createInstance(dto: CreatePostDomainDto): PostDocument {
