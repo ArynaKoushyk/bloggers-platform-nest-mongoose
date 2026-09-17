@@ -6,7 +6,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Comment, type CommentModelType } from '../domain/comment.entity';
 import { CreateCommentDto } from '../dto/create-comment.dto';
 import { UpdateCommentDto } from '../dto/update-comment.dto';
-import { CurrentUser } from '../../../../core/types/current-user.type';
+import { CurrentUser } from '../../../user-accounts/users/types/current-user.type';
 
 @Injectable()
 export class CommentsService {

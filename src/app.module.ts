@@ -1,11 +1,20 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { CoreModule } from './core/core.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { BloggersPlatformModule } from './modules/bloggers-platform/bloggers-platform.module';
 import { UserAccountsModule } from './modules/user-accounts/user-accounts.module';
+import { TestingModule } from './modules/testing/testing.module';
+
+// export const configModule = ConfigModule.forRoot({
+//   envFilePath: [
+//     process.env.ENV_FILE_PATH?.trim() || '',
+//     `.env.${process.env.NODE_ENV}.local`,
+//     `.env.${process.env.NODE_ENV}`,
+//     '.env.production',
+//   ],
+//   isGlobal: true,
+// });
 
 @Module({
   imports: [
@@ -25,8 +34,7 @@ import { UserAccountsModule } from './modules/user-accounts/user-accounts.module
     CoreModule,
     BloggersPlatformModule,
     UserAccountsModule,
+    TestingModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

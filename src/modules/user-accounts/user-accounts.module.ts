@@ -6,6 +6,7 @@ import { UsersService } from './users/application/users.service';
 import { PasswordHashAdapter } from './adapters/password-hash.adapter';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './users/domain/user.entity';
+import { BasicAuthGuard } from './auth/guards/basic/basic-auth.guard';
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { User, UserSchema } from './users/domain/user.entity';
     UsersRepository,
     UsersService,
     PasswordHashAdapter,
+    BasicAuthGuard,
   ],
-  exports: [],
+  exports: [BasicAuthGuard],
 })
 export class UserAccountsModule {}

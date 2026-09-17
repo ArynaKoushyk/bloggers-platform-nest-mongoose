@@ -1,6 +1,7 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { CommentsQueryRepository } from '../infrastructure/query/comments.query-repository';
 import { CommentViewDto } from './view-dto/comment.view-dto';
+import { ObjectIdValidationPipe } from '../../../../core/pipes/object-id-validation-transformation-pipe.service';
 
 @Controller('comments')
 export class CommentsController {
@@ -9,7 +10,9 @@ export class CommentsController {
   ) {}
 
   @Get(':id')
-  async getCommentById(@Param('id') id: string): Promise<CommentViewDto> {
+  async getCommentById(
+    @Param('id', ObjectIdValidationPipe) id: string,
+  ): Promise<CommentViewDto> {
     return this.commentsQueryRepository.findByIdOrFail(id);
   }
 }

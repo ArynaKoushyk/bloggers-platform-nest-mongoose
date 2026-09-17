@@ -9,6 +9,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { BlogsQueryRepository } from '../infrastructure/query/blogs.query-repository';
 import { BlogsService } from '../application/blogs.service';
@@ -18,6 +19,8 @@ import { GetBlogQueryParams } from './input-dto/get-blogs-query-params.input-dto
 import { PaginatedViewDto } from '../../../../core/dto/base-paginated.view-dto';
 import { CreateBlogInputDto } from './input-dto/create-blog.input-dto';
 import { UpdateBlogInputDto } from './input-dto/update-blog.input-dto';
+import { BasicAuthGuard } from '../../../user-accounts/auth/guards/basic/basic-auth.guard';
+import { ObjectIdValidationPipe } from '../../../../core/pipes/object-id-validation-transformation-pipe.service';
 
 @Controller('blogs')
 export class BlogsController {
@@ -30,7 +33,9 @@ export class BlogsController {
 
   @ApiParam({ name: 'id' }) //для сваггера
   @Get(':id') //users/232342-sdfssdf-23234323
-  async getBlogById(@Param('id') id: string): Promise<BlogViewDto> {
+  async getBlogById(
+    @Param('id', ObjectIdValidationPipe) id: string,
+  ): Promise<BlogViewDto> {
     // можем и чаще так и делаем возвращать Promise из action. Сам NestJS будет дожидаться, когда
     // промис зарезолвится и затем NestJS вернёт результат клиенту
     return this.blogsQueryRepository.findByIdOrFail(id);
@@ -43,6 +48,7 @@ export class BlogsController {
     return this.blogsQueryRepository.getAll(query);
   }
 
+  @UseGuards(BasicAuthGuard)
   @Post()
   async createBlog(@Body() dto: CreateBlogInputDto): Promise<BlogViewDto> {
     const blogId = await this.blogsService.createBlog(dto);
@@ -50,19 +56,23 @@ export class BlogsController {
     return this.blogsQueryRepository.findByIdOrFail(blogId);
   }
 
+  @UseGuards(BasicAuthGuard)
   @Put(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async updateBlog(
-    @Param('id') id: string,
+    @Param('id', ObjectIdValidationPipe) id: string,
     @Body() body: UpdateBlogInputDto,
   ): Promise<void> {
     await this.blogsService.updateBlog(id, body);
   }
 
   @ApiParam({ name: 'id' }) //для сваггера
+  @UseGuards(BasicAuthGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteBlog(@Param('id') id: string): Promise<void> {
+  async deleteBlog(
+    @Param('id', ObjectIdValidationPipe) id: string,
+  ): Promise<void> {
     return this.blogsService.deleteBlog(id);
   }
 }

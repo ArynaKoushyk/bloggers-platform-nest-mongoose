@@ -1,7 +1,5 @@
 import { UpdatePostDto } from '../../dto/update-post.dto';
-export class UpdatePostInputDto implements UpdatePostDto {
-  title: string;
-  shortDescription: string;
-  content: string;
-  blogId: string;
-}
+import { CreatePostInputDto } from './create-post.input-dto';
+export class UpdatePostInputDto
+  extends CreatePostInputDto
+  implements UpdatePostDto {}

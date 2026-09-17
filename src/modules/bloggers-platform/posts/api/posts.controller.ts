@@ -12,12 +12,15 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { PostViewDto } from './view-dto/post.view-dto';
 import { GetPostsQueryParams } from './input-dto/get-posts-query-params.input-dto';
 import { PaginatedViewDto } from '../../../../core/dto/base-paginated.view-dto';
 import { CreatePostInputDto } from './input-dto/create-post.input-dto';
 import { UpdatePostInputDto } from './input-dto/update-post.input-dto';
+import { BasicAuthGuard } from '../../../user-accounts/auth/guards/basic/basic-auth.guard';
+import { ObjectIdValidationPipe } from '../../../../core/pipes/object-id-validation-transformation-pipe.service';
 
 @Controller('posts')
 export class PostsController {
@@ -30,7 +33,9 @@ export class PostsController {
 
   @ApiParam({ name: 'id' })
   @Get(':id')
-  async getPostById(@Param('id') id: string): Promise<PostViewDto> {
+  async getPostById(
+    @Param('id', ObjectIdValidationPipe) id: string,
+  ): Promise<PostViewDto> {
     return this.postsQueryRepository.findByIdOrFail(id);
   }
 
@@ -41,6 +46,7 @@ export class PostsController {
     return this.postsQueryRepository.findAll(query);
   }
 
+  @UseGuards(BasicAuthGuard)
   @Post()
   async createPost(@Body() dto: CreatePostInputDto): Promise<PostViewDto> {
     const postId = await this.postsService.createPost(dto);
@@ -48,19 +54,23 @@ export class PostsController {
     return this.postsQueryRepository.findByIdOrFail(postId);
   }
 
+  @UseGuards(BasicAuthGuard)
   @Put(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async updatePost(
-    @Param('id') id: string,
+    @Param('id', ObjectIdValidationPipe) id: string,
     @Body() body: UpdatePostInputDto,
   ): Promise<void> {
     await this.postsService.updatePost(id, body);
   }
 
   @ApiParam({ name: 'id' })
+  @UseGuards(BasicAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
-  async deletePost(@Param('id') id: string): Promise<void> {
+  async deletePost(
+    @Param('id', ObjectIdValidationPipe) id: string,
+  ): Promise<void> {
     return this.postsService.deletePost(id);
   }
 }

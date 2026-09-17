@@ -17,6 +17,7 @@ import { CommentsQueryRepository } from './comments/infrastructure/query/comment
 import { CommentsService } from './comments/application/comments.service';
 import { CommentsController } from './comments/api/comments.controller';
 import { PostCommentsController } from './comments/api/post-comments.controller';
+import { UserAccountsModule } from '../user-accounts/user-accounts.module';
 
 @Module({
   imports: [
@@ -34,6 +35,8 @@ import { PostCommentsController } from './comments/api/post-comments.controller'
         schema: CommentSchema,
       },
     ]),
+
+    UserAccountsModule,
   ],
   controllers: [
     BlogsController,

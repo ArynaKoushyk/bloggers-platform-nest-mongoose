@@ -4,6 +4,7 @@ import { PostsQueryRepository } from '../../posts/infrastructure/query/posts.que
 import { CommentsQueryRepository } from '../infrastructure/query/comments.query-repository';
 import { GetCommentsQueryParams } from './input-dto/get-comments-query-params.input-dto';
 import { CommentViewDto } from './view-dto/comment.view-dto';
+import { ObjectIdValidationPipe } from '../../../../core/pipes/object-id-validation-transformation-pipe.service';
 
 @Controller('posts/:postId/comments')
 export class PostCommentsController {
@@ -14,7 +15,7 @@ export class PostCommentsController {
 
   @Get()
   async getCommentsByPostId(
-    @Param('postId') postId: string,
+    @Param('postId', ObjectIdValidationPipe) postId: string,
     @Query() query: GetCommentsQueryParams,
   ): Promise<PaginatedViewDto<CommentViewDto[]>> {
     await this.postsQueryRepository.findByIdOrFail(postId);

@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { BlogsQueryRepository } from '../../blogs/infrastructure/query/blogs.query-repository';
 import { PostsService } from '../application/posts.service';
 import { PostsQueryRepository } from '../infrastructure/query/posts.query-repository';
@@ -7,6 +15,8 @@ import { CreatePostForBlogInputDto } from './input-dto/create-post-for-blog.inpu
 import { PostViewDto } from './view-dto/post.view-dto';
 import { PaginatedViewDto } from '../../../../core/dto/base-paginated.view-dto';
 import type { CreatePostDto } from '../dto/create-post.dto';
+import { BasicAuthGuard } from '../../../user-accounts/auth/guards/basic/basic-auth.guard';
+import { ObjectIdValidationPipe } from '../../../../core/pipes/object-id-validation-transformation-pipe.service';
 
 @Controller('blogs/:blogId/posts')
 export class BlogPostsController {
@@ -18,7 +28,7 @@ export class BlogPostsController {
 
   @Get()
   async getAllPostsByBlogId(
-    @Param('blogId') blogId: string,
+    @Param('blogId', ObjectIdValidationPipe) blogId: string,
     @Query() query: GetPostsQueryParams,
   ): Promise<PaginatedViewDto<PostViewDto[]>> {
     await this.blogsQueryRepository.findByIdOrFail(blogId);
@@ -26,9 +36,10 @@ export class BlogPostsController {
     return this.postsQueryRepository.findPostsByBlogId(blogId, query);
   }
 
+  @UseGuards(BasicAuthGuard)
   @Post()
   async createPostForBlog(
-    @Param('blogId') blogId: string,
+    @Param('blogId', ObjectIdValidationPipe) blogId: string,
     @Body() dto: CreatePostForBlogInputDto,
   ): Promise<PostViewDto> {
     const data: CreatePostDto = {
