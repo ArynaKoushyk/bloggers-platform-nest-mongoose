@@ -6,12 +6,12 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import type { Request, Response } from 'express';
-import { DomainExceptionCode } from '../domain-exception-codes';
+import { DomainExceptionCode } from '../domain-exception-code.enum';
 import type { ErrorResponseBody } from '../error-response-body.type';
 import { ConfigService } from '@nestjs/config';
 
 @Catch()
-export class AllHttpExceptionsFilter implements ExceptionFilter {
+export class AllExceptionsFilter implements ExceptionFilter {
   constructor(private readonly configService: ConfigService) {}
 
   catch(exception: unknown, host: ArgumentsHost): void {

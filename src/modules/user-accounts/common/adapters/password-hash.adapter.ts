@@ -3,13 +3,13 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class PasswordHashAdapter {
-  async generatePasswordHash(password: string): Promise<string> {
+  async hashPassword(password: string): Promise<string> {
     const salt = await bcrypt.genSalt(10);
 
     return bcrypt.hash(password, salt);
   }
 
-  comparePasswords(args: { password: string; hash: string }): Promise<boolean> {
+  verifyPassword(args: { password: string; hash: string }): Promise<boolean> {
     return bcrypt.compare(args.password, args.hash);
   }
 }

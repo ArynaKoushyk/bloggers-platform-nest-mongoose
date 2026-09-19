@@ -4,13 +4,13 @@ import {
   ExceptionFilter,
   HttpStatus,
 } from '@nestjs/common';
-import { DomainException } from '../domain-exceptions';
-import { Request, Response } from 'express';
-import { DomainExceptionCode } from '../domain-exception-codes';
-import { ErrorResponseBody } from '../error-response-body.type';
+import { DomainException } from '../domain.exception';
+import type { Request, Response } from 'express';
+import { DomainExceptionCode } from '../domain-exception-code.enum';
+import type { ErrorResponseBody } from '../error-response-body.type';
 
 @Catch(DomainException)
-export class DomainHttpExceptionsFilter implements ExceptionFilter {
+export class DomainExceptionFilter implements ExceptionFilter {
   catch(exception: DomainException, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();

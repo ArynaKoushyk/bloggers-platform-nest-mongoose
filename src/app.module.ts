@@ -26,7 +26,7 @@ import { TestingModule } from './modules/testing/testing.module';
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
+      useFactory: (configService: ConfigService) => ({
         uri: configService.getOrThrow<string>('MONGO_URL'),
         dbName: configService.getOrThrow<string>('DB_NAME'),
       }),

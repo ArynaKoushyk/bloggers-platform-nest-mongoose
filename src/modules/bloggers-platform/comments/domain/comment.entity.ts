@@ -5,9 +5,7 @@ import {
   CommentatorInfoSchema,
 } from './schemas/commentator-info.schema';
 import { CreateCommentDomainDto } from './dto/create-comment.domain.dto';
-import { DomainException } from '../../../../core/exceptions/domain-exceptions';
-import { DomainExceptionCode } from '../../../../core/exceptions/domain-exception-codes';
-import { UpdateCommentDto } from '../dto/update-comment.dto';
+import { UpdateCommentDomainDto } from './dto/update-comment.domain.dto';
 
 @Schema({ timestamps: true, collection: 'comments' })
 export class Comment {
@@ -16,6 +14,7 @@ export class Comment {
 
   @Prop({ type: String, required: true })
   content: string;
+
   @Prop({
     type: CommentatorInfoSchema,
     required: true,
@@ -43,31 +42,13 @@ export class Comment {
     return comment as CommentDocument;
   }
 
-  update(userId: string, dto: UpdateCommentDto): void {
+  update(dto: UpdateCommentDomainDto): void {
     const { content } = dto;
-    this.verifyOwner(userId);
     this.content = content;
   }
 
-  makeDeleted(userId: string): void {
-    this.verifyOwner(userId);
-    if (this.deletedAt) {
-      throw new DomainException({
-        code: DomainExceptionCode.Conflict,
-        message: 'Comment is already deleted',
-      });
-    }
-
+  markAsDeleted(): void {
     this.deletedAt = new Date();
-  }
-
-  private verifyOwner(userId: string): void {
-    if (this.commentatorInfo.userId !== userId) {
-      throw new DomainException({
-        code: DomainExceptionCode.Forbidden,
-        message: 'You are not the owner of this comment',
-      });
-    }
   }
 }
 

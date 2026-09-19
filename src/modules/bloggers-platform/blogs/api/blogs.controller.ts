@@ -15,12 +15,12 @@ import { BlogsQueryRepository } from '../infrastructure/query/blogs.query-reposi
 import { BlogsService } from '../application/blogs.service';
 import { ApiParam } from '@nestjs/swagger';
 import { BlogViewDto } from './view-dto/blog.view-dto';
-import { GetBlogQueryParams } from './input-dto/get-blogs-query-params.input-dto';
+import { GetBlogsQueryParams } from './input-dto/get-blogs-query-params.input-dto';
 import { PaginatedViewDto } from '../../../../core/dto/base-paginated.view-dto';
 import { CreateBlogInputDto } from './input-dto/create-blog.input-dto';
 import { UpdateBlogInputDto } from './input-dto/update-blog.input-dto';
 import { BasicAuthGuard } from '../../../user-accounts/auth/guards/basic/basic-auth.guard';
-import { ObjectIdValidationPipe } from '../../../../core/pipes/object-id-validation-transformation-pipe.service';
+import { ObjectIdValidationPipe } from '../../../../core/pipes/object-id-validation.pipe';
 
 @Controller('blogs')
 export class BlogsController {
@@ -42,10 +42,10 @@ export class BlogsController {
   }
 
   @Get()
-  async getAllBlogs(
-    @Query() query: GetBlogQueryParams,
+  async getBlogs(
+    @Query() query: GetBlogsQueryParams,
   ): Promise<PaginatedViewDto<BlogViewDto[]>> {
-    return this.blogsQueryRepository.getAll(query);
+    return this.blogsQueryRepository.findAll(query);
   }
 
   @UseGuards(BasicAuthGuard)

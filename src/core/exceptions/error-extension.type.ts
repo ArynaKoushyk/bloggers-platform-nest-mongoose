@@ -1,4 +1,4 @@
-export type Extension = {
+export type ErrorExtension = {
   message: string;
   key: string;
 };

@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Model } from 'mongoose';
-import { DomainException } from '../../../../core/exceptions/domain-exceptions';
-import { DomainExceptionCode } from '../../../../core/exceptions/domain-exception-codes';
+import { DomainException } from '../../../../core/exceptions/domain.exception';
+import { DomainExceptionCode } from '../../../../core/exceptions/domain-exception-code.enum';
 import { CreatePostDomainDto } from './dto/create-post.domain.dto';
 import { UpdatePostDomainDto } from './dto/update-post.domain.dto';
 
@@ -56,13 +56,7 @@ export class Post {
     this.blogId = blogId;
   }
 
-  makeDeleted() {
-    if (this.deletedAt) {
-      throw new DomainException({
-        code: DomainExceptionCode.Conflict,
-        message: 'Post is already deleted',
-      });
-    }
+  markAsDeleted() {
     this.deletedAt = new Date();
   }
 }

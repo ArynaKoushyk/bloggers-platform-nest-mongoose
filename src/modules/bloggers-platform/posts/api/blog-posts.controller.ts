@@ -14,9 +14,9 @@ import { GetPostsQueryParams } from './input-dto/get-posts-query-params.input-dt
 import { CreatePostForBlogInputDto } from './input-dto/create-post-for-blog.input-dto';
 import { PostViewDto } from './view-dto/post.view-dto';
 import { PaginatedViewDto } from '../../../../core/dto/base-paginated.view-dto';
-import type { CreatePostDto } from '../dto/create-post.dto';
+import type { CreatePostDto } from '../application/dto/create-post.dto';
 import { BasicAuthGuard } from '../../../user-accounts/auth/guards/basic/basic-auth.guard';
-import { ObjectIdValidationPipe } from '../../../../core/pipes/object-id-validation-transformation-pipe.service';
+import { ObjectIdValidationPipe } from '../../../../core/pipes/object-id-validation.pipe';
 
 @Controller('blogs/:blogId/posts')
 export class BlogPostsController {
@@ -27,18 +27,18 @@ export class BlogPostsController {
   ) {}
 
   @Get()
-  async getAllPostsByBlogId(
+  async getBlogPosts(
     @Param('blogId', ObjectIdValidationPipe) blogId: string,
     @Query() query: GetPostsQueryParams,
   ): Promise<PaginatedViewDto<PostViewDto[]>> {
     await this.blogsQueryRepository.findByIdOrFail(blogId);
 
-    return this.postsQueryRepository.findPostsByBlogId(blogId, query);
+    return this.postsQueryRepository.findAllByBlogId(blogId, query);
   }
 
   @UseGuards(BasicAuthGuard)
   @Post()
-  async createPostForBlog(
+  async createBlogPost(
     @Param('blogId', ObjectIdValidationPipe) blogId: string,
     @Body() dto: CreatePostForBlogInputDto,
   ): Promise<PostViewDto> {

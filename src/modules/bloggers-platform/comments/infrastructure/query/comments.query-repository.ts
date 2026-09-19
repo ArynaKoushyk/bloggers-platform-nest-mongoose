@@ -5,16 +5,16 @@ import { CommentViewDto } from '../../api/view-dto/comment.view-dto';
 import { FilterQuery } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Comment, type CommentModelType } from '../../domain/comment.entity';
-import { DomainException } from '../../../../../core/exceptions/domain-exceptions';
-import { DomainExceptionCode } from '../../../../../core/exceptions/domain-exception-codes';
+import { DomainException } from '../../../../../core/exceptions/domain.exception';
+import { DomainExceptionCode } from '../../../../../core/exceptions/domain-exception-code.enum';
 
 @Injectable()
 export class CommentsQueryRepository {
   constructor(
-    @InjectModel(Comment.name) private CommentModel: CommentModelType,
+    @InjectModel(Comment.name) private commentModel: CommentModelType,
   ) {}
 
-  async findCommentsByPostId(
+  async findAllByPostId(
     postId: string,
     query: GetCommentsQueryParams,
   ): Promise<PaginatedViewDto<CommentViewDto[]>> {
@@ -23,13 +23,14 @@ export class CommentsQueryRepository {
     const limit = pageSize;
     const filter: FilterQuery<Comment> = { postId, deletedAt: null };
 
-    const comments = await this.CommentModel.find(filter)
+    const comments = await this.commentModel
+      .find(filter)
       .sort({ [sortBy]: sortDirection })
       .skip(skip)
       .limit(limit)
       .exec();
 
-    const totalCount = await this.CommentModel.countDocuments(filter).exec();
+    const totalCount = await this.commentModel.countDocuments(filter).exec();
     const items = comments.map((comment) => CommentViewDto.mapToView(comment));
     return PaginatedViewDto.mapToView({
       items,
@@ -39,10 +40,12 @@ export class CommentsQueryRepository {
     });
   }
   async findByIdOrFail(id: string): Promise<CommentViewDto> {
-    const comment = await this.CommentModel.findOne({
-      _id: id,
-      deletedAt: null,
-    }).exec();
+    const comment = await this.commentModel
+      .findOne({
+        _id: id,
+        deletedAt: null,
+      })
+      .exec();
 
     if (!comment) {
       throw new DomainException({

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import type { Connection } from 'mongoose';
-import { DomainExceptionCode } from '../../core/exceptions/domain-exception-codes';
-import { DomainException } from '../../core/exceptions/domain-exceptions';
+import { DomainExceptionCode } from '../../core/exceptions/domain-exception-code.enum';
+import { DomainException } from '../../core/exceptions/domain.exception';
 
 @Injectable()
 export class TestingService {

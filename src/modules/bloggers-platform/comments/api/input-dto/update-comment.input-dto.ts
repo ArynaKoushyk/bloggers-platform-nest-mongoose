@@ -1,4 +1,4 @@
-import { UpdateCommentDto } from '../../dto/update-comment.dto';
+import { UpdateCommentDto } from '../../application/dto/update-comment.dto';
 import { CreateCommentInputDto } from './create-comment.input-dto';
 
 export class UpdateCommentInputDto

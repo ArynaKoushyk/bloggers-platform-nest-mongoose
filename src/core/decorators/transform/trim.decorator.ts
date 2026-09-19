@@ -4,6 +4,8 @@ import { Transform, TransformFnParams } from 'class-transformer';
 // не забываем установить transform: true в глобальном ValidationPipe
 export const Trim = () => {
   return Transform(({ value }: TransformFnParams) => {
-    return typeof value === 'string' ? value.trim() : value;
+    const input: unknown = value;
+
+    return typeof input === 'string' ? input.trim() : input;
   });
 };

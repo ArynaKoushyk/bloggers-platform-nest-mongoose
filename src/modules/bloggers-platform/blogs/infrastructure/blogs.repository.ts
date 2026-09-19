@@ -2,18 +2,20 @@ import { Injectable } from '@nestjs/common';
 import { Blog } from '../domain/blog.entity';
 import type { BlogDocument, BlogModelType } from '../domain/blog.entity';
 import { InjectModel } from '@nestjs/mongoose';
-import { DomainException } from '../../../../core/exceptions/domain-exceptions';
-import { DomainExceptionCode } from '../../../../core/exceptions/domain-exception-codes';
+import { DomainException } from '../../../../core/exceptions/domain.exception';
+import { DomainExceptionCode } from '../../../../core/exceptions/domain-exception-code.enum';
 
 @Injectable()
 export class BlogsRepository {
-  constructor(@InjectModel(Blog.name) private BlogModel: BlogModelType) {}
+  constructor(@InjectModel(Blog.name) private blogModel: BlogModelType) {}
 
   async findById(id: string): Promise<BlogDocument | null> {
-    return this.BlogModel.findOne({
-      _id: id,
-      deletedAt: null,
-    }).exec();
+    return this.blogModel
+      .findOne({
+        _id: id,
+        deletedAt: null,
+      })
+      .exec();
   }
 
   async save(blog: BlogDocument): Promise<void> {

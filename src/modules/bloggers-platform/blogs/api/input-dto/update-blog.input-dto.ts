@@ -1,4 +1,4 @@
-import { UpdateBlogDto } from '../../dto/update-blog.dto';
+import { UpdateBlogDto } from '../../application/dto/update-blog.dto';
 import { CreateBlogInputDto } from './create-blog.input-dto';
 
 export class UpdateBlogInputDto

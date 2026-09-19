@@ -1,9 +1,9 @@
 import { INestApplication } from '@nestjs/common';
-import { pipesSetup } from './pipes.setup';
-import { globalPrefixSetup } from './global-prefix.setup';
-import { swaggerSetup } from './swagger.setup';
-export function appSetup(app: INestApplication) {
-  pipesSetup(app);
-  globalPrefixSetup(app);
-  swaggerSetup(app);
+import { setupGlobalPipes } from './pipes.setup';
+import { setupGlobalPrefix } from './global-prefix.setup';
+import { setupSwagger } from './swagger.setup';
+export function setupApp(app: INestApplication) {
+  setupGlobalPipes(app);
+  setupGlobalPrefix(app);
+  setupSwagger(app);
 }

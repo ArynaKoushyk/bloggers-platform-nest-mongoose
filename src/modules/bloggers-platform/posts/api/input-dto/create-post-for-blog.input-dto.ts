@@ -1,4 +1,4 @@
-import { IsStringWithTrim } from '../../../../../core/decorators/validation/is-string-with-trim';
+import { IsStringWithTrim } from '../../../../../core/decorators/validation/is-string-with-trim.decorator';
 import {
   postContentConstraints,
   postShortDescriptionConstraints,

@@ -1,9 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Model } from 'mongoose';
-import { CreateBlogDto } from '../dto/create-blog.dto';
-import { UpdateBlogDto } from '../dto/update-blog.dto';
-import { DomainException } from '../../../../core/exceptions/domain-exceptions';
-import { DomainExceptionCode } from '../../../../core/exceptions/domain-exception-codes';
+import { CreateBlogDomainDto } from './dto/create-blog.domain.dto';
+import { UpdateBlogDomainDto } from './dto/update-blog.domain.dto';
 
 @Schema({ timestamps: true, collection: 'blogs' })
 export class Blog {
@@ -25,7 +23,7 @@ export class Blog {
   @Prop({ type: Date, default: null })
   deletedAt: Date | null;
 
-  static createInstance(dto: CreateBlogDto): BlogDocument {
+  static createInstance(dto: CreateBlogDomainDto): BlogDocument {
     const { name, description, websiteUrl } = dto;
 
     const blog = new this();
@@ -38,20 +36,14 @@ export class Blog {
     return blog as BlogDocument;
   }
 
-  update(dto: UpdateBlogDto): void {
+  update(dto: UpdateBlogDomainDto): void {
     const { name, description, websiteUrl } = dto;
     this.name = name;
     this.description = description;
     this.websiteUrl = websiteUrl;
   }
 
-  makeDeleted() {
-    if (this.deletedAt) {
-      throw new DomainException({
-        code: DomainExceptionCode.Conflict,
-        message: 'Blog is already deleted',
-      });
-    }
+  markAsDeleted(): void {
     this.deletedAt = new Date();
   }
 }

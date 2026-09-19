@@ -1,6 +1,6 @@
 import { Matches } from 'class-validator';
-import { CreateBlogDto } from '../../dto/create-blog.dto';
-import { IsStringWithTrim } from '../../../../../core/decorators/validation/is-string-with-trim';
+import { CreateBlogDto } from '../../application/dto/create-blog.dto';
+import { IsStringWithTrim } from '../../../../../core/decorators/validation/is-string-with-trim.decorator';
 import {
   blogDescriptionConstraints,
   blogNameConstraints,

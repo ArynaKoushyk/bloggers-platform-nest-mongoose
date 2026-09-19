@@ -2,21 +2,21 @@ import { Injectable } from '@nestjs/common';
 import { Blog } from '../../domain/blog.entity';
 import type { BlogModelType } from '../../domain/blog.entity';
 import { InjectModel } from '@nestjs/mongoose';
-import { GetBlogQueryParams } from '../../api/input-dto/get-blogs-query-params.input-dto';
+import { GetBlogsQueryParams } from '../../api/input-dto/get-blogs-query-params.input-dto';
 import { PaginatedViewDto } from '../../../../../core/dto/base-paginated.view-dto';
 import { BlogViewDto } from '../../api/view-dto/blog.view-dto';
 import { FilterQuery } from 'mongoose';
-import { DomainException } from '../../../../../core/exceptions/domain-exceptions';
-import { DomainExceptionCode } from '../../../../../core/exceptions/domain-exception-codes';
+import { DomainException } from '../../../../../core/exceptions/domain.exception';
+import { DomainExceptionCode } from '../../../../../core/exceptions/domain-exception-code.enum';
 
 @Injectable()
 export class BlogsQueryRepository {
   constructor(
     @InjectModel(Blog.name)
-    private readonly BlogModel: BlogModelType,
+    private readonly blogModel: BlogModelType,
   ) {}
-  async getAll(
-    query: GetBlogQueryParams,
+  async findAll(
+    query: GetBlogsQueryParams,
   ): Promise<PaginatedViewDto<BlogViewDto[]>> {
     const filter: FilterQuery<Blog> = {
       deletedAt: null,
@@ -30,13 +30,14 @@ export class BlogsQueryRepository {
     }
 
     const [blogs, totalCount] = await Promise.all([
-      this.BlogModel.find(filter)
+      this.blogModel
+        .find(filter)
         .sort({ [query.sortBy]: query.sortDirection })
         .skip(query.calculateSkip())
         .limit(query.pageSize)
         .exec(),
 
-      this.BlogModel.countDocuments(filter).exec(),
+      this.blogModel.countDocuments(filter).exec(),
     ]);
 
     const items = blogs.map((blog) => BlogViewDto.mapToView(blog));
@@ -50,10 +51,12 @@ export class BlogsQueryRepository {
   }
 
   async findByIdOrFail(id: string): Promise<BlogViewDto> {
-    const blog = await this.BlogModel.findOne({
-      _id: id,
-      deletedAt: null,
-    }).exec();
+    const blog = await this.blogModel
+      .findOne({
+        _id: id,
+        deletedAt: null,
+      })
+      .exec();
 
     if (!blog) {
       throw new DomainException({

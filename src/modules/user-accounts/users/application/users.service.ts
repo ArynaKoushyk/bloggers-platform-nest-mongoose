@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, type UserModelType } from '../domain/user.entity';
-import { CreateUserDto } from '../dto/create-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UsersRepository } from '../infrastructure/users.repository';
-import { DomainException } from '../../../../core/exceptions/domain-exceptions';
-import { DomainExceptionCode } from '../../../../core/exceptions/domain-exception-codes';
-import { PasswordHashAdapter } from '../../adapters/password-hash.adapter';
+import { DomainException } from '../../../../core/exceptions/domain.exception';
+import { DomainExceptionCode } from '../../../../core/exceptions/domain-exception-code.enum';
+import { PasswordHashAdapter } from '../../common/adapters/password-hash.adapter';
+import { CreateUserDomainDto } from '../domain/dto/create-user.domain.dto';
 
 @Injectable()
 export class UsersService {
@@ -15,7 +16,7 @@ export class UsersService {
     private passwordHashAdapter: PasswordHashAdapter,
   ) {}
 
-  async createUser(dto: CreateUserDto): Promise<string> {
+  async createConfirmedUser(dto: CreateUserDto): Promise<string> {
     const { login, password, email } = dto;
     const existingLogin = await this.usersRepository.findByLogin(login);
 
@@ -33,16 +34,15 @@ export class UsersService {
         message: 'User with the same email already exists',
       });
     }
-    const passwordHash =
-      await this.passwordHashAdapter.generatePasswordHash(password);
+    const passwordHash = await this.passwordHashAdapter.hashPassword(password);
 
-    const data = {
+    const data: CreateUserDomainDto = {
       login,
       passwordHash,
       email,
     };
 
-    const user = this.UserModel.createInstance(data);
+    const user = this.UserModel.createConfirmed(data);
     await this.usersRepository.save(user);
 
     return user._id.toString();
@@ -50,7 +50,7 @@ export class UsersService {
 
   async deleteUser(id: string): Promise<void> {
     const user = await this.usersRepository.findByIdOrFail(id);
-    user.makeDeleted();
+    user.markAsDeleted();
     await this.usersRepository.save(user);
   }
 }

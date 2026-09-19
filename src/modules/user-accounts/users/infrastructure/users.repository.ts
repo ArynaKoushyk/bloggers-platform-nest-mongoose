@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { User, UserDocument, type UserModelType } from '../domain/user.entity';
 import { InjectModel } from '@nestjs/mongoose';
-import { DomainException } from '../../../../core/exceptions/domain-exceptions';
-import { DomainExceptionCode } from '../../../../core/exceptions/domain-exception-codes';
+import { DomainException } from '../../../../core/exceptions/domain.exception';
+import { DomainExceptionCode } from '../../../../core/exceptions/domain-exception-code.enum';
 
 @Injectable()
 export class UsersRepository {
@@ -46,19 +46,19 @@ export class UsersRepository {
     }).exec();
   }
 
-  //   async findUserByEmailConfirmationCode(
-  //     code: string,
-  //   ): Promise<UserDocument | null> {
-  //     return await UserModel.findOne({
-  //       'emailConfirmation.confirmationCode': code,
-  //     }).exec();
-  //   }
+  async findUserByEmailConfirmationCode(
+    code: string,
+  ): Promise<UserDocument | null> {
+    return await this.UserModel.findOne({
+      'emailConfirmation.confirmationCode': code,
+    }).exec();
+  }
 
-  //   async findUserByPasswordRecoveryCode(
-  //     recoveryCode: string,
-  //   ): Promise<UserDocument | null> {
-  //     return await UserModel.findOne({
-  //       'passwordRecovery.recoveryCode': recoveryCode,
-  //     }).exec();
-  //   }
+  async findUserByPasswordRecoveryCode(
+    recoveryCode: string,
+  ): Promise<UserDocument | null> {
+    return await this.UserModel.findOne({
+      'passwordRecovery.recoveryCode': recoveryCode,
+    }).exec();
+  }
 }

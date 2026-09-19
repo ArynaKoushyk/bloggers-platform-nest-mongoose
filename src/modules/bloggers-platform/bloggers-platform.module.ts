@@ -18,6 +18,7 @@ import { CommentsService } from './comments/application/comments.service';
 import { CommentsController } from './comments/api/comments.controller';
 import { PostCommentsController } from './comments/api/post-comments.controller';
 import { UserAccountsModule } from '../user-accounts/user-accounts.module';
+import { CommentAccessPolicy } from './comments/application/policies/comment-access.policy';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import { UserAccountsModule } from '../user-accounts/user-accounts.module';
     CommentsRepository,
     CommentsQueryRepository,
     CommentsService,
+    CommentAccessPolicy,
   ],
   exports: [],
 })

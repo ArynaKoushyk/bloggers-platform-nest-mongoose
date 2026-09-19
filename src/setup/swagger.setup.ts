@@ -2,7 +2,7 @@ import { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { GLOBAL_PREFIX } from './global-prefix.setup';
 
-export function swaggerSetup(app: INestApplication) {
+export function setupSwagger(app: INestApplication) {
   const config = new DocumentBuilder()
     .setTitle('BLOGGER API')
     .addBearerAuth()

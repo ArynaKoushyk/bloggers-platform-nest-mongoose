@@ -20,7 +20,7 @@ import { PaginatedViewDto } from '../../../../core/dto/base-paginated.view-dto';
 import { CreatePostInputDto } from './input-dto/create-post.input-dto';
 import { UpdatePostInputDto } from './input-dto/update-post.input-dto';
 import { BasicAuthGuard } from '../../../user-accounts/auth/guards/basic/basic-auth.guard';
-import { ObjectIdValidationPipe } from '../../../../core/pipes/object-id-validation-transformation-pipe.service';
+import { ObjectIdValidationPipe } from '../../../../core/pipes/object-id-validation.pipe';
 
 @Controller('posts')
 export class PostsController {
@@ -40,7 +40,7 @@ export class PostsController {
   }
 
   @Get()
-  async getAllPosts(
+  async getPosts(
     @Query() query: GetPostsQueryParams,
   ): Promise<PaginatedViewDto<PostViewDto[]>> {
     return this.postsQueryRepository.findAll(query);

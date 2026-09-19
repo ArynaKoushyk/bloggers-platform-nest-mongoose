@@ -6,11 +6,11 @@ import { GetPostsQueryParams } from '../../api/input-dto/get-posts-query-params.
 import { PaginatedViewDto } from '../../../../../core/dto/base-paginated.view-dto';
 import { PostViewDto } from '../../api/view-dto/post.view-dto';
 import { FilterQuery } from 'mongoose';
-import { DomainException } from '../../../../../core/exceptions/domain-exceptions';
-import { DomainExceptionCode } from '../../../../../core/exceptions/domain-exception-codes';
+import { DomainException } from '../../../../../core/exceptions/domain.exception';
+import { DomainExceptionCode } from '../../../../../core/exceptions/domain-exception-code.enum';
 @Injectable()
 export class PostsQueryRepository {
-  constructor(@InjectModel(Post.name) private PostModel: PostModelType) {}
+  constructor(@InjectModel(Post.name) private postModel: PostModelType) {}
 
   async findAll(
     query: GetPostsQueryParams,
@@ -22,13 +22,14 @@ export class PostsQueryRepository {
       deletedAt: null,
     };
 
-    const posts = await this.PostModel.find(filter)
+    const posts = await this.postModel
+      .find(filter)
       .sort({ [sortBy]: sortDirection })
       .skip(skip)
       .limit(limit)
       .exec();
 
-    const totalCount = await this.PostModel.countDocuments(filter);
+    const totalCount = await this.postModel.countDocuments(filter);
     const items = posts.map((p) => PostViewDto.mapToView(p));
 
     return PaginatedViewDto.mapToView({
@@ -40,10 +41,12 @@ export class PostsQueryRepository {
   }
 
   async findByIdOrFail(id: string): Promise<PostViewDto> {
-    const post = await this.PostModel.findOne({
-      _id: id,
-      deletedAt: null,
-    }).exec();
+    const post = await this.postModel
+      .findOne({
+        _id: id,
+        deletedAt: null,
+      })
+      .exec();
     if (!post) {
       throw new DomainException({
         code: DomainExceptionCode.NotFound,
@@ -53,7 +56,7 @@ export class PostsQueryRepository {
     return PostViewDto.mapToView(post);
   }
 
-  async findPostsByBlogId(
+  async findAllByBlogId(
     blogId: string,
     query: GetPostsQueryParams,
   ): Promise<PaginatedViewDto<PostViewDto[]>> {
@@ -62,7 +65,8 @@ export class PostsQueryRepository {
     const limit = pageSize;
     const filter: FilterQuery<Post> = { blogId, deletedAt: null };
 
-    const posts = await this.PostModel.find(filter)
+    const posts = await this.postModel
+      .find(filter)
       .sort({ [sortBy]: sortDirection })
       .skip(skip)
       .limit(limit)
@@ -70,7 +74,7 @@ export class PostsQueryRepository {
 
     const items = posts.map((p) => PostViewDto.mapToView(p));
 
-    const totalCount = await this.PostModel.countDocuments(filter);
+    const totalCount = await this.postModel.countDocuments(filter);
     return PaginatedViewDto.mapToView({
       items,
       page: pageNumber,

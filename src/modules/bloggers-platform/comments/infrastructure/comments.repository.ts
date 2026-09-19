@@ -5,20 +5,22 @@ import {
   CommentDocument,
   type CommentModelType,
 } from '../domain/comment.entity';
-import { DomainException } from '../../../../core/exceptions/domain-exceptions';
-import { DomainExceptionCode } from '../../../../core/exceptions/domain-exception-codes';
+import { DomainException } from '../../../../core/exceptions/domain.exception';
+import { DomainExceptionCode } from '../../../../core/exceptions/domain-exception-code.enum';
 
 @Injectable()
 export class CommentsRepository {
   constructor(
-    @InjectModel(Comment.name) private CommentModel: CommentModelType,
+    @InjectModel(Comment.name) private commentModel: CommentModelType,
   ) {}
 
   async findById(id: string): Promise<CommentDocument | null> {
-    return await this.CommentModel.findOne({
-      _id: id,
-      deletedAt: null,
-    }).exec();
+    return await this.commentModel
+      .findOne({
+        _id: id,
+        deletedAt: null,
+      })
+      .exec();
   }
 
   async save(comment: CommentDocument): Promise<void> {

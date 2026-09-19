@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Post, type PostModelType } from '../domain/post.entity';
 import { PostsRepository } from '../infrastructure/posts.repository';
-import { CreatePostDto } from '../dto/create-post.dto';
-import { UpdatePostDto } from '../dto/update-post.dto';
+import { CreatePostDto } from './dto/create-post.dto';
+import { UpdatePostDto } from './dto/update-post.dto';
 import { BlogsRepository } from '../../blogs/infrastructure/blogs.repository';
 import { CreatePostDomainDto } from '../domain/dto/create-post.domain.dto';
 import { UpdatePostDomainDto } from '../domain/dto/update-post.domain.dto';
@@ -12,7 +12,7 @@ import { UpdatePostDomainDto } from '../domain/dto/update-post.domain.dto';
 export class PostsService {
   constructor(
     @InjectModel(Post.name)
-    private PostModel: PostModelType,
+    private postModel: PostModelType,
     private postsRepository: PostsRepository,
     private blogsRepository: BlogsRepository,
   ) {}
@@ -30,7 +30,7 @@ export class PostsService {
       blogName: blog.name,
     };
 
-    const createdPost = this.PostModel.createInstance(domainDto);
+    const createdPost = this.postModel.createInstance(domainDto);
 
     await this.postsRepository.save(createdPost);
 
@@ -58,7 +58,7 @@ export class PostsService {
 
   async deletePost(id: string): Promise<void> {
     const post = await this.postsRepository.findByIdOrFail(id);
-    post.makeDeleted();
+    post.markAsDeleted();
     await this.postsRepository.save(post);
   }
 }

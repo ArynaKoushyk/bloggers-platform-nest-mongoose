@@ -1,8 +1,8 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
-import { DomainException } from '../../../../../core/exceptions/domain-exceptions';
-import { DomainExceptionCode } from '../../../../../core/exceptions/domain-exception-codes';
+import { DomainException } from '../../../../../core/exceptions/domain.exception';
+import { DomainExceptionCode } from '../../../../../core/exceptions/domain-exception-code.enum';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -18,7 +18,7 @@ export class BasicAuthGuard implements CanActivate {
     this.validPassword = configService.getOrThrow<string>('ADMIN_PASSWORD');
   }
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
+  canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest<Request>();
     const authHeader = request.headers.authorization;
 

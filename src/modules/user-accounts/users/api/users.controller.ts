@@ -14,10 +14,10 @@ import { UsersQueryRepository } from '../infrastructure/query/users.query-reposi
 import { UsersService } from '../application/users.service';
 import { PaginatedViewDto } from '../../../../core/dto/base-paginated.view-dto';
 import { UserViewDto } from './view-dto/user.view-dto';
-import { GetUserQueryParams } from './input-dto/get-users-query-params.input-dto';
+import { GetUsersQueryParams } from './input-dto/get-users-query-params.input-dto';
 import { CreateUserInputDto } from './input-dto/create-user.input-dto';
 import { BasicAuthGuard } from '../../auth/guards/basic/basic-auth.guard';
-import { ObjectIdValidationPipe } from '../../../../core/pipes/object-id-validation-transformation-pipe.service';
+import { ObjectIdValidationPipe } from '../../../../core/pipes/object-id-validation.pipe';
 
 @UseGuards(BasicAuthGuard)
 @Controller('users')
@@ -28,15 +28,15 @@ export class UsersController {
   ) {}
 
   @Get()
-  async getAllUsers(
-    @Query() query: GetUserQueryParams,
+  async getUsers(
+    @Query() query: GetUsersQueryParams,
   ): Promise<PaginatedViewDto<UserViewDto[]>> {
     return await this.usersQueryRepository.findAll(query);
   }
 
   @Post()
   async createUser(@Body() dto: CreateUserInputDto): Promise<UserViewDto> {
-    const userId = await this.usersService.createUser(dto);
+    const userId = await this.usersService.createConfirmedUser(dto);
     return await this.usersQueryRepository.findByIdOrFail(userId);
   }
 
