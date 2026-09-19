@@ -6,7 +6,7 @@ import { MeViewDto } from '../../api/view-dto/me.view-dto';
 export class AuthQueryRepository {
   constructor(private usersRepository: UsersRepository) {}
 
-  async findMeByUserId(userId: string): Promise<MeViewDto> {
+  async findCurrentUserByIdOrFail(userId: string): Promise<MeViewDto> {
     const user = await this.usersRepository.findByIdOrFail(userId);
 
     return MeViewDto.mapToView(user);

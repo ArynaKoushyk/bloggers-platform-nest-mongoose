@@ -105,7 +105,7 @@ export class User {
     return null;
   }
 
-  setEmailConfirmationCode(code: string, expirationDate: Date): boolean {
+  setConfirmationCode(code: string, expirationDate: Date): boolean {
     if (this.emailConfirmation.isConfirmed) {
       return false;
     }
@@ -114,7 +114,7 @@ export class User {
     return true;
   }
 
-  setPasswordRecoveryCode(recoveryCode: string, expirationDate: Date): void {
+  setRecoveryCode(recoveryCode: string, expirationDate: Date): void {
     this.passwordRecovery.recoveryCode = recoveryCode;
     this.passwordRecovery.expirationDate = expirationDate;
   }

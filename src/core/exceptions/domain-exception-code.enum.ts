@@ -6,6 +6,7 @@ export enum DomainExceptionCode {
   Forbidden = 'Forbidden',
   ValidationError = 'ValidationError',
   Conflict = 'Conflict',
+
   //auth
   Unauthorized = 'Unauthorized',
   EmailNotConfirmed = 'EmailNotConfirmed',

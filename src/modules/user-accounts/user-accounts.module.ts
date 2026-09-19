@@ -37,15 +37,12 @@ import { NotificationsModule } from './common/notifications/notifications.module
     UsersRepository,
     UsersService,
     PasswordHashAdapter,
-    BasicAuthGuard,
     LocalStrategy,
     JwtStrategy,
-    LocalAuthGuard,
-    JwtAuthGuard,
     AuthService,
     AuthQueryRepository,
     JwtAdapter,
   ],
-  exports: [BasicAuthGuard],
+  exports: [JwtStrategy],
 })
 export class UserAccountsModule {}

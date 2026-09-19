@@ -33,10 +33,10 @@ export class UsersRepository {
   }
 
   async findByLogin(login: string): Promise<UserDocument | null> {
-    return await this.UserModel.findOne({ login, deletedAt: null }).exec();
+    return await this.UserModel.findOne({ login }).exec();
   }
   async findByEmail(email: string): Promise<UserDocument | null> {
-    return await this.UserModel.findOne({ email, deletedAt: null }).exec();
+    return await this.UserModel.findOne({ email }).exec();
   }
 
   async findByLoginOrEmail(loginOrEmail: string): Promise<UserDocument | null> {
@@ -46,19 +46,17 @@ export class UsersRepository {
     }).exec();
   }
 
-  async findUserByEmailConfirmationCode(
-    code: string,
-  ): Promise<UserDocument | null> {
+  async findByConfirmationCode(code: string): Promise<UserDocument | null> {
     return await this.UserModel.findOne({
       'emailConfirmation.confirmationCode': code,
+      deletedAt: null,
     }).exec();
   }
 
-  async findUserByPasswordRecoveryCode(
-    recoveryCode: string,
-  ): Promise<UserDocument | null> {
+  async findByRecoveryCode(recoveryCode: string): Promise<UserDocument | null> {
     return await this.UserModel.findOne({
       'passwordRecovery.recoveryCode': recoveryCode,
+      deletedAt: null,
     }).exec();
   }
 }

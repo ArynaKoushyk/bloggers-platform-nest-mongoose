@@ -8,6 +8,7 @@ import { DomainException } from '../domain.exception';
 import type { Request, Response } from 'express';
 import { DomainExceptionCode } from '../domain-exception-code.enum';
 import type { ErrorResponseBody } from '../error-response-body.type';
+import type { ApiErrorResponse } from '../api-error-response.type';
 
 @Catch(DomainException)
 export class DomainExceptionFilter implements ExceptionFilter {
@@ -17,12 +18,26 @@ export class DomainExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
 
     const status = this.mapToHttpStatus(exception.code);
-    const responseBody = this.buildResponseBody(exception, request.url);
+    const responseBody =
+      status === HttpStatus.BAD_REQUEST
+        ? this.buildBadRequestResponse(exception)
+        : this.buildResponseBody(exception, request.url);
 
     response.status(status).json(responseBody);
   }
 
-  private mapToHttpStatus(code: DomainExceptionCode): number {
+  private buildBadRequestResponse(
+    exception: DomainException,
+  ): ApiErrorResponse {
+    return {
+      errorsMessages: exception.extensions.map(({ message, key }) => ({
+        message,
+        field: key,
+      })),
+    };
+  }
+
+  private mapToHttpStatus(code: DomainExceptionCode): HttpStatus {
     switch (code) {
       case DomainExceptionCode.BadRequest:
       case DomainExceptionCode.ValidationError:

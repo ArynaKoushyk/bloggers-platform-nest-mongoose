@@ -24,6 +24,12 @@ export class UsersService {
       throw new DomainException({
         code: DomainExceptionCode.BadRequest,
         message: 'User with the same login already exists',
+        extensions: [
+          {
+            message: 'User with the same login already exists',
+            key: 'login',
+          },
+        ],
       });
     }
     const existingEmail = await this.usersRepository.findByEmail(email);
@@ -32,6 +38,12 @@ export class UsersService {
       throw new DomainException({
         code: DomainExceptionCode.BadRequest,
         message: 'User with the same email already exists',
+        extensions: [
+          {
+            message: 'User with the same email already exists',
+            key: 'email',
+          },
+        ],
       });
     }
     const passwordHash = await this.passwordHashAdapter.hashPassword(password);
