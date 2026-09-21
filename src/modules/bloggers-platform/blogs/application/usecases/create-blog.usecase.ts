@@ -1,0 +1,33 @@
+import { CreateBlogDto } from '../dto/create-blog.dto';
+import { CreateBlogDomainDto } from '../../domain/dto/create-blog.domain.dto';
+import { Blog, type BlogModelType } from '../../domain/blog.entity';
+import { BlogsRepository } from '../../infrastructure/blogs.repository';
+import { InjectModel } from '@nestjs/mongoose';
+import { Command, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+
+export class CreateBlogCommand extends Command<string> {
+  constructor(public readonly dto: CreateBlogDto) {
+    super();
+  }
+}
+
+@CommandHandler(CreateBlogCommand)
+export class CreateBlogUseCase implements ICommandHandler<CreateBlogCommand> {
+  constructor(
+    @InjectModel(Blog.name)
+    private readonly blogModel: BlogModelType,
+    private readonly blogsRepository: BlogsRepository,
+  ) {}
+
+  async execute({ dto }: CreateBlogCommand): Promise<string> {
+    const domainDto: CreateBlogDomainDto = {
+      name: dto.name,
+      description: dto.description,
+      websiteUrl: dto.websiteUrl,
+    };
+    const createdBlog = this.blogModel.createInstance(domainDto);
+
+    await this.blogsRepository.save(createdBlog);
+    return createdBlog._id.toString();
+  }
+}

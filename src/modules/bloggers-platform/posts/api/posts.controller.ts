@@ -1,6 +1,4 @@
 import { ApiParam } from '@nestjs/swagger';
-import { PostsService } from '../application/posts.service';
-import { PostsQueryRepository } from '../infrastructure/query/posts.query-repository';
 import {
   Body,
   Controller,
@@ -21,12 +19,18 @@ import { CreatePostInputDto } from './input-dto/create-post.input-dto';
 import { UpdatePostInputDto } from './input-dto/update-post.input-dto';
 import { BasicAuthGuard } from '../../../user-accounts/auth/guards/basic/basic-auth.guard';
 import { ObjectIdValidationPipe } from '../../../../core/pipes/object-id-validation.pipe';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { CreatePostCommand } from '../application/usecases/create-post.usecase';
+import { UpdatePostCommand } from '../application/usecases/update-post.usecase';
+import { DeletePostCommand } from '../application/usecases/delete-post.usecase';
+import { GetPostByIdQuery } from '../application/queries/get-post-by-id.query-handler';
+import { GetPostsQuery } from '../application/queries/get-posts.query-handler';
 
 @Controller('posts')
 export class PostsController {
   constructor(
-    private postsQueryRepository: PostsQueryRepository,
-    private postsService: PostsService,
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
   ) {
     console.log('PostsController created');
   }
@@ -36,22 +40,22 @@ export class PostsController {
   async getPostById(
     @Param('id', ObjectIdValidationPipe) id: string,
   ): Promise<PostViewDto> {
-    return this.postsQueryRepository.findByIdOrFail(id);
+    return await this.queryBus.execute(new GetPostByIdQuery(id));
   }
 
   @Get()
   async getPosts(
-    @Query() query: GetPostsQueryParams,
+    @Query() queryParams: GetPostsQueryParams,
   ): Promise<PaginatedViewDto<PostViewDto[]>> {
-    return this.postsQueryRepository.findAll(query);
+    return await this.queryBus.execute(new GetPostsQuery(queryParams));
   }
 
   @UseGuards(BasicAuthGuard)
   @Post()
   async createPost(@Body() dto: CreatePostInputDto): Promise<PostViewDto> {
-    const postId = await this.postsService.createPost(dto);
+    const postId = await this.commandBus.execute(new CreatePostCommand(dto));
 
-    return this.postsQueryRepository.findByIdOrFail(postId);
+    return await this.queryBus.execute(new GetPostByIdQuery(postId));
   }
 
   @UseGuards(BasicAuthGuard)
@@ -59,9 +63,9 @@ export class PostsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async updatePost(
     @Param('id', ObjectIdValidationPipe) id: string,
-    @Body() body: UpdatePostInputDto,
+    @Body() dto: UpdatePostInputDto,
   ): Promise<void> {
-    await this.postsService.updatePost(id, body);
+    await this.commandBus.execute(new UpdatePostCommand(id, dto));
   }
 
   @ApiParam({ name: 'id' })
@@ -71,6 +75,6 @@ export class PostsController {
   async deletePost(
     @Param('id', ObjectIdValidationPipe) id: string,
   ): Promise<void> {
-    return this.postsService.deletePost(id);
+    return this.commandBus.execute(new DeletePostCommand(id));
   }
 }

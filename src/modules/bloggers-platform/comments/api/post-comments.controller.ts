@@ -1,25 +1,22 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { PaginatedViewDto } from '../../../../core/dto/base-paginated.view-dto';
-import { PostsQueryRepository } from '../../posts/infrastructure/query/posts.query-repository';
-import { CommentsQueryRepository } from '../infrastructure/query/comments.query-repository';
 import { GetCommentsQueryParams } from './input-dto/get-comments-query-params.input-dto';
 import { CommentViewDto } from './view-dto/comment.view-dto';
 import { ObjectIdValidationPipe } from '../../../../core/pipes/object-id-validation.pipe';
+import { QueryBus } from '@nestjs/cqrs';
+import { GetPostCommentsQuery } from '../application/queries/get-post-comments.query-handler';
 
 @Controller('posts/:postId/comments')
 export class PostCommentsController {
-  constructor(
-    private readonly postsQueryRepository: PostsQueryRepository,
-    private readonly commentsQueryRepository: CommentsQueryRepository,
-  ) {}
+  constructor(private readonly queryBus: QueryBus) {}
 
   @Get()
   async getPostComments(
     @Param('postId', ObjectIdValidationPipe) postId: string,
-    @Query() query: GetCommentsQueryParams,
+    @Query() queryParams: GetCommentsQueryParams,
   ): Promise<PaginatedViewDto<CommentViewDto[]>> {
-    await this.postsQueryRepository.findByIdOrFail(postId);
-
-    return this.commentsQueryRepository.findAllByPostId(postId, query);
+    return await this.queryBus.execute(
+      new GetPostCommentsQuery(postId, queryParams),
+    );
   }
 }

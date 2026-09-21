@@ -11,8 +11,6 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { BlogsQueryRepository } from '../infrastructure/query/blogs.query-repository';
-import { BlogsService } from '../application/blogs.service';
 import { ApiParam } from '@nestjs/swagger';
 import { BlogViewDto } from './view-dto/blog.view-dto';
 import { GetBlogsQueryParams } from './input-dto/get-blogs-query-params.input-dto';
@@ -21,39 +19,43 @@ import { CreateBlogInputDto } from './input-dto/create-blog.input-dto';
 import { UpdateBlogInputDto } from './input-dto/update-blog.input-dto';
 import { BasicAuthGuard } from '../../../user-accounts/auth/guards/basic/basic-auth.guard';
 import { ObjectIdValidationPipe } from '../../../../core/pipes/object-id-validation.pipe';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { CreateBlogCommand } from '../application/usecases/create-blog.usecase';
+import { DeleteBlogCommand } from '../application/usecases/delete-blog.usecase';
+import { UpdateBlogCommand } from '../application/usecases/update-blog.usecase';
+import { GetBlogsQuery } from '../application/queries/get-blogs.query-handler';
+import { GetBlogByIdQuery } from '../application/queries/get-blog-by-id.query-handler';
 
 @Controller('blogs')
 export class BlogsController {
   constructor(
-    private blogsQueryRepository: BlogsQueryRepository,
-    private blogsService: BlogsService,
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
   ) {
     console.log('BlogsController created');
   }
 
-  @ApiParam({ name: 'id' }) //для сваггера
-  @Get(':id') //users/232342-sdfssdf-23234323
+  @ApiParam({ name: 'id' })
+  @Get(':id')
   async getBlogById(
     @Param('id', ObjectIdValidationPipe) id: string,
   ): Promise<BlogViewDto> {
-    // можем и чаще так и делаем возвращать Promise из action. Сам NestJS будет дожидаться, когда
-    // промис зарезолвится и затем NestJS вернёт результат клиенту
-    return this.blogsQueryRepository.findByIdOrFail(id);
+    return await this.queryBus.execute(new GetBlogByIdQuery(id));
   }
 
   @Get()
   async getBlogs(
-    @Query() query: GetBlogsQueryParams,
+    @Query() queryParams: GetBlogsQueryParams,
   ): Promise<PaginatedViewDto<BlogViewDto[]>> {
-    return this.blogsQueryRepository.findAll(query);
+    return this.queryBus.execute(new GetBlogsQuery(queryParams));
   }
 
   @UseGuards(BasicAuthGuard)
   @Post()
   async createBlog(@Body() dto: CreateBlogInputDto): Promise<BlogViewDto> {
-    const blogId = await this.blogsService.createBlog(dto);
+    const blogId = await this.commandBus.execute(new CreateBlogCommand(dto));
 
-    return this.blogsQueryRepository.findByIdOrFail(blogId);
+    return this.queryBus.execute(new GetBlogByIdQuery(blogId));
   }
 
   @UseGuards(BasicAuthGuard)
@@ -61,18 +63,18 @@ export class BlogsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async updateBlog(
     @Param('id', ObjectIdValidationPipe) id: string,
-    @Body() body: UpdateBlogInputDto,
+    @Body() dto: UpdateBlogInputDto,
   ): Promise<void> {
-    await this.blogsService.updateBlog(id, body);
+    await this.commandBus.execute(new UpdateBlogCommand(id, dto));
   }
 
-  @ApiParam({ name: 'id' }) //для сваггера
+  @ApiParam({ name: 'id' })
   @UseGuards(BasicAuthGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteBlog(
     @Param('id', ObjectIdValidationPipe) id: string,
   ): Promise<void> {
-    return this.blogsService.deleteBlog(id);
+    return this.commandBus.execute(new DeleteBlogCommand(id));
   }
 }

@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { BloggersPlatformModule } from './modules/bloggers-platform/bloggers-platform.module';
 import { UserAccountsModule } from './modules/user-accounts/user-accounts.module';
 import { TestingModule } from './modules/testing/testing.module';
+import { CqrsModule } from '@nestjs/cqrs';
 
 // export const configModule = ConfigModule.forRoot({
 //   envFilePath: [
@@ -35,6 +36,7 @@ import { TestingModule } from './modules/testing/testing.module';
     BloggersPlatformModule,
     UserAccountsModule,
     TestingModule,
+    CqrsModule.forRoot(),
   ],
 })
 export class AppModule {}
