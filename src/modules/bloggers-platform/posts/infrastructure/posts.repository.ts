@@ -9,8 +9,8 @@ import { DomainExceptionCode } from '../../../../core/exceptions/domain-exceptio
 export class PostsRepository {
   constructor(@InjectModel(Post.name) private postModel: PostModelType) {}
 
-  async findById(id: string): Promise<PostDocument | null> {
-    return await this.postModel
+  findById(id: string): Promise<PostDocument | null> {
+    return this.postModel
       .findOne({
         _id: id,
         deletedAt: null,

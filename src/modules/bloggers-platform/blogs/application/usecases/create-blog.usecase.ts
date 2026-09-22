@@ -25,6 +25,7 @@ export class CreateBlogUseCase implements ICommandHandler<CreateBlogCommand> {
       description: dto.description,
       websiteUrl: dto.websiteUrl,
     };
+
     const createdBlog = this.blogModel.createInstance(domainDto);
 
     await this.blogsRepository.save(createdBlog);

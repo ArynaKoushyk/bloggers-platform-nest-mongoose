@@ -1,0 +1,97 @@
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import {
+  User,
+  type UserDocument,
+  type UserModelType,
+} from '../../domain/user.entity';
+import { UsersRepository } from '../../infrastructure/users.repository';
+import { PasswordHashAdapter } from '../../infrastructure/adapters/password-hash.adapter';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { CreateUserDomainDto } from '../../domain/dto/create-user.domain.dto';
+import { CreateUnconfirmedUserDomainDto } from '../../domain/dto/create-unconfirmed-user.domain.dto';
+import { DomainException } from '../../../../../core/exceptions/domain.exception';
+import { DomainExceptionCode } from '../../../../../core/exceptions/domain-exception-code.enum';
+
+@Injectable()
+export class UsersFactory {
+  constructor(
+    @InjectModel(User.name)
+    private readonly UserModel: UserModelType,
+    private readonly usersRepository: UsersRepository,
+    private readonly passwordHashAdapter: PasswordHashAdapter,
+  ) {}
+
+  async createConfirmed(dto: CreateUserDto): Promise<UserDocument> {
+    await this.ensureUserDoesNotExist(dto.login, dto.email);
+
+    const passwordHash = await this.passwordHashAdapter.hashPassword(
+      dto.password,
+    );
+
+    const domainDto: CreateUserDomainDto = {
+      login: dto.login,
+      email: dto.email,
+      passwordHash,
+    };
+
+    return this.UserModel.createConfirmed(domainDto);
+  }
+
+  async createUnconfirmed(
+    dto: CreateUserDto,
+    confirmationCode: string,
+    confirmationCodeExpirationDate: Date,
+  ): Promise<UserDocument> {
+    await this.ensureUserDoesNotExist(dto.login, dto.email);
+
+    const passwordHash = await this.passwordHashAdapter.hashPassword(
+      dto.password,
+    );
+
+    const domainDto: CreateUnconfirmedUserDomainDto = {
+      login: dto.login,
+      email: dto.email,
+      passwordHash,
+      confirmationCode,
+      confirmationCodeExpirationDate,
+    };
+
+    return this.UserModel.createUnconfirmed(domainDto);
+  }
+
+  private async ensureUserDoesNotExist(
+    login: string,
+    email: string,
+  ): Promise<void> {
+    const existingLogin = await this.usersRepository.findByLogin(login);
+
+    if (existingLogin) {
+      throw new DomainException({
+        code: DomainExceptionCode.BadRequest,
+        message: 'User with the same login already exists',
+        extensions: [
+          {
+            message: 'User with the same login already exists',
+            key: 'login',
+          },
+        ],
+      });
+    }
+
+    const existingEmail = await this.usersRepository.findByEmail(email);
+
+    if (existingEmail) {
+      throw new DomainException({
+        code: DomainExceptionCode.BadRequest,
+        message: 'User with the same email already exists',
+        extensions: [
+          {
+            message: 'User with the same email already exists',
+            key: 'email',
+          },
+        ],
+      });
+    }
+  }
+}

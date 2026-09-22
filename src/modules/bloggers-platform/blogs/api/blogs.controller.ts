@@ -47,7 +47,7 @@ export class BlogsController {
   async getBlogs(
     @Query() queryParams: GetBlogsQueryParams,
   ): Promise<PaginatedViewDto<BlogViewDto[]>> {
-    return this.queryBus.execute(new GetBlogsQuery(queryParams));
+    return await this.queryBus.execute(new GetBlogsQuery(queryParams));
   }
 
   @UseGuards(BasicAuthGuard)
@@ -55,7 +55,7 @@ export class BlogsController {
   async createBlog(@Body() dto: CreateBlogInputDto): Promise<BlogViewDto> {
     const blogId = await this.commandBus.execute(new CreateBlogCommand(dto));
 
-    return this.queryBus.execute(new GetBlogByIdQuery(blogId));
+    return await this.queryBus.execute(new GetBlogByIdQuery(blogId));
   }
 
   @UseGuards(BasicAuthGuard)
@@ -75,6 +75,6 @@ export class BlogsController {
   async deleteBlog(
     @Param('id', ObjectIdValidationPipe) id: string,
   ): Promise<void> {
-    return this.commandBus.execute(new DeleteBlogCommand(id));
+    return await this.commandBus.execute(new DeleteBlogCommand(id));
   }
 }

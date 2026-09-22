@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import type { SignOptions } from 'jsonwebtoken';
-import type { AccessTokenPayload } from '../../auth/application/types/access-token-payload.type';
-import type { RefreshTokenPayload } from '../../auth/application/types/refresh-token-payload.type';
+import type { AccessTokenPayload } from '../../application/types/access-token-payload.type';
+import type { RefreshTokenPayload } from '../../application/types/refresh-token-payload.type';
 
 @Injectable()
 export class JwtAdapter {

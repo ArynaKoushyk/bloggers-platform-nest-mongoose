@@ -29,9 +29,6 @@ export class GetPostCommentsQueryHandler implements IQueryHandler<GetPostComment
   }: GetPostCommentsQuery): Promise<PaginatedViewDto<CommentViewDto[]>> {
     await this.postsQueryRepository.findByIdOrFail(postId);
 
-    return await this.commentsQueryRepository.findAllByPostId(
-      postId,
-      queryParams,
-    );
+    return this.commentsQueryRepository.findAllByPostId(postId, queryParams);
   }
 }

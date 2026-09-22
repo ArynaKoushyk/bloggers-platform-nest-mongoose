@@ -9,7 +9,7 @@ import { DomainExceptionCode } from '../../../../core/exceptions/domain-exceptio
 export class BlogsRepository {
   constructor(@InjectModel(Blog.name) private blogModel: BlogModelType) {}
 
-  async findById(id: string): Promise<BlogDocument | null> {
+  findById(id: string): Promise<BlogDocument | null> {
     return this.blogModel
       .findOne({
         _id: id,

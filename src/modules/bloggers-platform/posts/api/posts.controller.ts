@@ -75,6 +75,6 @@ export class PostsController {
   async deletePost(
     @Param('id', ObjectIdValidationPipe) id: string,
   ): Promise<void> {
-    return this.commandBus.execute(new DeletePostCommand(id));
+    return await this.commandBus.execute(new DeletePostCommand(id));
   }
 }

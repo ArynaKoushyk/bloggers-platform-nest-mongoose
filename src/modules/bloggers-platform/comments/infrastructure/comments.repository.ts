@@ -14,8 +14,8 @@ export class CommentsRepository {
     @InjectModel(Comment.name) private commentModel: CommentModelType,
   ) {}
 
-  async findById(id: string): Promise<CommentDocument | null> {
-    return await this.commentModel
+  findById(id: string): Promise<CommentDocument | null> {
+    return this.commentModel
       .findOne({
         _id: id,
         deletedAt: null,

@@ -27,6 +27,6 @@ export class GetBlogPostsQueryHandler implements IQueryHandler<GetBlogPostsQuery
   }: GetBlogPostsQuery): Promise<PaginatedViewDto<PostViewDto[]>> {
     await this.blogsQueryRepository.findByIdOrFail(blogId);
 
-    return await this.postsQueryRepository.findAllByBlogId(blogId, queryParams);
+    return this.postsQueryRepository.findAllByBlogId(blogId, queryParams);
   }
 }

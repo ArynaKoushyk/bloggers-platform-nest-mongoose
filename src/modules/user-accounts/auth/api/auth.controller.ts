@@ -21,18 +21,28 @@ import { StartPasswordRecoveryInputDto } from './input-dto/start-password-recove
 import { ResetPasswordInputDto } from './input-dto/reset-password.input-dto';
 import { LoginSuccessViewDto } from './view-dto/login-success.view-dto';
 import { LoginInputDto } from './input-dto/login.input-dto';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { RegisterUserCommand } from '../application/usecases/register-user.usecase';
+import { LoginCommand } from '../application/usecases/login-user.usecase';
+import { ResendRegistrationConfirmationCommand } from '../application/usecases/resend-registration-confirmation-email.usecase';
+import { ConfirmRegistrationCommand } from '../application/usecases/confirm-registration.usecase';
+import { StartPasswordRecoveryCommand } from '../application/usecases/start-password-recovery.usecase';
+import { ResetPasswordCommand } from '../application/usecases/reset-password.usecase';
+import { GetCurrentUserQuery } from '../application/queries/get-current-user.query-handler';
 
 @Controller('auth')
 export class AuthController {
   constructor(
-    private authService: AuthService,
-    private authQueryRepository: AuthQueryRepository,
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
+    private readonly authQueryRepository: AuthQueryRepository,
+    private readonly authService: AuthService,
   ) {}
 
   @Post('registration')
   @HttpCode(HttpStatus.NO_CONTENT)
   registerUser(@Body() dto: RegisterUserInputDto): Promise<void> {
-    return this.authService.registerUser(dto);
+    return this.commandBus.execute(new RegisterUserCommand(dto));
   }
 
   @Post('login')
@@ -44,7 +54,7 @@ export class AuthController {
       dto.password,
     );
 
-    return this.authService.createAccessToken(user.id);
+    return this.commandBus.execute(new LoginCommand(user.id));
   }
 
   @Post('registration-email-resending')
@@ -52,13 +62,15 @@ export class AuthController {
   resendRegistrationConfirmationEmail(
     @Body() dto: ResendRegistrationConfirmationEmailInputDto,
   ): Promise<void> {
-    return this.authService.resendRegistrationConfirmationEmail(dto);
+    return this.commandBus.execute(
+      new ResendRegistrationConfirmationCommand(dto),
+    );
   }
 
   @Post('registration-confirmation')
   @HttpCode(HttpStatus.NO_CONTENT)
   confirmRegistration(@Body() dto: ConfirmRegistrationInputDto): Promise<void> {
-    return this.authService.confirmRegistration(dto);
+    return this.commandBus.execute(new ConfirmRegistrationCommand(dto));
   }
 
   @Post('password-recovery')
@@ -66,19 +78,19 @@ export class AuthController {
   startPasswordRecovery(
     @Body() dto: StartPasswordRecoveryInputDto,
   ): Promise<void> {
-    return this.authService.startPasswordRecovery(dto);
+    return this.commandBus.execute(new StartPasswordRecoveryCommand(dto));
   }
 
   @Post('new-password')
   @HttpCode(HttpStatus.NO_CONTENT)
   resetPassword(@Body() dto: ResetPasswordInputDto): Promise<void> {
-    return this.authService.resetPassword(dto);
+    return this.commandBus.execute(new ResetPasswordCommand(dto));
   }
 
   @ApiBearerAuth()
   @Get('me')
   @UseGuards(JwtAuthGuard)
   getCurrentUser(@CurrentUser() user: UserContextDto): Promise<MeViewDto> {
-    return this.authQueryRepository.findCurrentUserByIdOrFail(user.id);
+    return this.queryBus.execute(new GetCurrentUserQuery(user.id));
   }
 }

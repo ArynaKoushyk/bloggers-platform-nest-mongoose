@@ -51,6 +51,6 @@ export class BlogPostsController {
     };
 
     const postId = await this.commandBus.execute(new CreatePostCommand(data));
-    return this.queryBus.execute(new GetPostByIdQuery(postId));
+    return await this.queryBus.execute(new GetPostByIdQuery(postId));
   }
 }
