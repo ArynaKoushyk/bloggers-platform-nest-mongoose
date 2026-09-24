@@ -1,4 +1,12 @@
-import type { BlogDocument } from '../../domain/blog.entity';
+import type { Types } from 'mongoose';
+import type { Blog } from '../../domain/blog.entity';
+
+type BlogReadModel = Pick<
+  Blog,
+  'name' | 'description' | 'websiteUrl' | 'createdAt' | 'isMembership'
+> & {
+  _id: Types.ObjectId;
+};
 
 export class BlogViewDto {
   id: string;
@@ -8,7 +16,7 @@ export class BlogViewDto {
   createdAt: Date;
   isMembership: boolean;
 
-  static mapToView(blog: BlogDocument): BlogViewDto {
+  static mapToView(blog: BlogReadModel): BlogViewDto {
     const dto = new BlogViewDto();
 
     dto.id = blog._id.toString();

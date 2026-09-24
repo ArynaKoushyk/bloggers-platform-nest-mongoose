@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { UsersController } from './users/api/users.controller';
-import { UsersQueryRepository } from './users/infrastructure/query/users.query-repository';
+import { UsersQueryRepository } from './users/infrastructure/repositories/users.query-repository';
 import { UsersRepository } from './users/infrastructure/repositories/users.repository';
 import { PasswordHashAdapter } from './users/infrastructure/adapters/password-hash.adapter';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -9,7 +9,7 @@ import { LocalStrategy } from './auth/infrastructure/strategies/local.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './auth/infrastructure/strategies/jwt.strategy';
-import { AuthQueryRepository } from './auth/infrastructure/query/auth.query-repository';
+import { AuthQueryRepository } from './auth/infrastructure/repositories/auth.query-repository';
 import { JwtAdapter } from './auth/infrastructure/adapters/jwt.adapter';
 import { AuthController } from './auth/api/auth.controller';
 import { NotificationsModule } from '../notifications/notifications.module';

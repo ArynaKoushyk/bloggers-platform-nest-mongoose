@@ -3,3 +3,5 @@ export enum LikeStatus {
   Like = 'Like',
   Dislike = 'Dislike',
 }
+
+export type StoredLikeStatus = Exclude<LikeStatus, LikeStatus.None>;

@@ -2,7 +2,7 @@ import { IQueryHandler, Query, QueryHandler } from '@nestjs/cqrs';
 import { PaginatedViewDto } from '../../../../../core/dto/base-paginated.view-dto';
 import { PostViewDto } from '../../api/view-dto/post.view-dto';
 import { GetPostsQueryParams } from '../../api/input-dto/get-posts-query-params.input-dto';
-import { PostsQueryRepository } from '../../infrastructure/query/posts.query-repository';
+import { PostsQueryRepository } from '../../infrastructure/repositories/posts.query-repository';
 
 export class GetPostsQuery extends Query<PaginatedViewDto<PostViewDto[]>> {
   constructor(public readonly queryParams: GetPostsQueryParams) {

@@ -17,7 +17,7 @@ import { DomainExceptionCode } from '../../../../../core/exceptions/domain-excep
 export class UsersFactory {
   constructor(
     @InjectModel(User.name)
-    private readonly UserModel: UserModelType,
+    private readonly userModel: UserModelType,
     private readonly usersRepository: UsersRepository,
     private readonly passwordHashAdapter: PasswordHashAdapter,
   ) {}
@@ -35,7 +35,7 @@ export class UsersFactory {
       passwordHash,
     };
 
-    return this.UserModel.createConfirmed(domainDto);
+    return this.userModel.createConfirmed(domainDto);
   }
 
   async createUnconfirmed(
@@ -57,7 +57,7 @@ export class UsersFactory {
       confirmationCodeExpirationDate,
     };
 
-    return this.UserModel.createUnconfirmed(domainDto);
+    return this.userModel.createUnconfirmed(domainDto);
   }
 
   private async ensureUserDoesNotExist(

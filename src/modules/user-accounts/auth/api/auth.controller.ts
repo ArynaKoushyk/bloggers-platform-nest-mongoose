@@ -11,7 +11,7 @@ import { AuthService } from '../application/auth.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { CurrentUser } from '../decorators/param/current-user.decorator';
 import { UserContextDto } from '../application/dto/user-context.dto';
-import { AuthQueryRepository } from '../infrastructure/query/auth.query-repository';
+import { AuthQueryRepository } from '../infrastructure/repositories/auth.query-repository';
 import { MeViewDto } from './view-dto/me.view-dto';
 import { JwtAuthGuard } from '../guards/jwt/jwt-auth.guard';
 import { RegisterUserInputDto } from './input-dto/register-user.input-dto';

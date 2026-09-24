@@ -3,15 +3,15 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Blog, BlogSchema } from './blogs/domain/blog.entity';
 import { BlogsRepository } from './blogs/infrastructure/repositories/blogs.repository';
 import { BlogsController } from './blogs/api/blogs.controller';
-import { BlogsQueryRepository } from './blogs/infrastructure/query/blogs.query-repository';
+import { BlogsQueryRepository } from './blogs/infrastructure/repositories/blogs.query-repository';
 import { PostsController } from './posts/api/posts.controller';
 import { PostsRepository } from './posts/infrastructure/repositories/posts.repository';
-import { PostsQueryRepository } from './posts/infrastructure/query/posts.query-repository';
+import { PostsQueryRepository } from './posts/infrastructure/repositories/posts.query-repository';
 import { Post, PostSchema } from './posts/domain/post.entity';
 import { BlogPostsController } from './posts/api/blog-posts.controller';
 import { Comment, CommentSchema } from './comments/domain/comment.entity';
 import { CommentsRepository } from './comments/infrastructure/repositories/comments.repository';
-import { CommentsQueryRepository } from './comments/infrastructure/query/comments.query-repository';
+import { CommentsQueryRepository } from './comments/infrastructure/repositories/comments.query-repository';
 import { CommentsController } from './comments/api/comments.controller';
 import { PostCommentsController } from './comments/api/post-comments.controller';
 import { UserAccountsModule } from '../user-accounts/user-accounts.module';
@@ -32,6 +32,9 @@ import { GetPostByIdQueryHandler } from './posts/application/queries/get-post-by
 import { GetBlogPostsQueryHandler } from './posts/application/queries/get-blog-posts.query-handler';
 import { GetCommentByIdQueryHandler } from './comments/application/queries/get-comment-by-id.query-handler';
 import { GetPostCommentsQueryHandler } from './comments/application/queries/get-post-comments.query-handler';
+import { Like, LikeSchema } from './likes/domain/like.entity';
+import { LikesRepository } from './likes/infrastructure/repositories/likes.repository';
+import { LikesQueryRepository } from './likes/infrastructure/repositories/likes.query-repository';
 
 const useCases = [
   // Blogs
@@ -77,6 +80,10 @@ const repositories = [
   // Comments
   CommentsRepository,
   CommentsQueryRepository,
+
+  // Likes
+  LikesRepository,
+  LikesQueryRepository,
 ];
 
 const policies = [CommentAccessPolicy];
@@ -95,6 +102,10 @@ const policies = [CommentAccessPolicy];
       {
         name: Comment.name,
         schema: CommentSchema,
+      },
+      {
+        name: Like.name,
+        schema: LikeSchema,
       },
     ]),
 

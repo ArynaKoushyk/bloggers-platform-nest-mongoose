@@ -27,6 +27,7 @@ export class PostsQueryRepository {
       .sort({ [sortBy]: sortDirection })
       .skip(skip)
       .limit(limit)
+      .lean()
       .exec();
 
     const totalCount = await this.postModel.countDocuments(filter);
@@ -46,6 +47,7 @@ export class PostsQueryRepository {
         _id: id,
         deletedAt: null,
       })
+      .lean()
       .exec();
     if (!post) {
       throw new DomainException({
@@ -70,6 +72,7 @@ export class PostsQueryRepository {
       .sort({ [sortBy]: sortDirection })
       .skip(skip)
       .limit(limit)
+      .lean()
       .exec();
 
     const items = posts.map((p) => PostViewDto.mapToView(p));

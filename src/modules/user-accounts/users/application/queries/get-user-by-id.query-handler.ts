@@ -1,6 +1,6 @@
 import { IQueryHandler, Query, QueryHandler } from '@nestjs/cqrs';
 import { UserViewDto } from '../../api/view-dto/user.view-dto';
-import { UsersQueryRepository } from '../../infrastructure/query/users.query-repository';
+import { UsersQueryRepository } from '../../infrastructure/repositories/users.query-repository';
 
 export class GetUserByIdQuery extends Query<UserViewDto> {
   constructor(public readonly userId: string) {

@@ -1,6 +1,6 @@
 import { IQueryHandler, Query, QueryHandler } from '@nestjs/cqrs';
 import { CommentViewDto } from '../../api/view-dto/comment.view-dto';
-import { CommentsQueryRepository } from '../../infrastructure/query/comments.query-repository';
+import { CommentsQueryRepository } from '../../infrastructure/repositories/comments.query-repository';
 
 export class GetCommentByIdQuery extends Query<CommentViewDto> {
   constructor(public readonly commentId: string) {

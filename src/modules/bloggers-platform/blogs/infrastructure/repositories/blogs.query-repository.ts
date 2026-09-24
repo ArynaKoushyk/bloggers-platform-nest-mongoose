@@ -35,6 +35,7 @@ export class BlogsQueryRepository {
         .sort({ [query.sortBy]: query.sortDirection })
         .skip(query.calculateSkip())
         .limit(query.pageSize)
+        .lean()
         .exec(),
 
       this.blogModel.countDocuments(filter).exec(),
@@ -56,6 +57,7 @@ export class BlogsQueryRepository {
         _id: id,
         deletedAt: null,
       })
+      .lean()
       .exec();
 
     if (!blog) {

@@ -16,13 +16,13 @@ import { ResetPasswordError } from './enums/reset-password-error.enum';
 
 @Schema({ timestamps: true, collection: 'users' })
 export class User {
-  @Prop({ type: String, required: true, unique: true })
+  @Prop({ type: String, required: true })
   login: string;
 
   @Prop({ type: String, required: true })
   passwordHash: string;
 
-  @Prop({ type: String, required: true, unique: true })
+  @Prop({ type: String, required: true })
   email: string;
 
   createdAt: Date;
@@ -143,6 +143,27 @@ export class User {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+UserSchema.index(
+  { login: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      deletedAt: null,
+    },
+  },
+);
+
+UserSchema.index(
+  { email: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      deletedAt: null,
+    },
+  },
+);
+
 UserSchema.loadClass(User);
 
 export type UserDocument = HydratedDocument<User>;

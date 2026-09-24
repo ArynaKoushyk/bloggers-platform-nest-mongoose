@@ -28,6 +28,7 @@ export class CommentsQueryRepository {
       .sort({ [sortBy]: sortDirection })
       .skip(skip)
       .limit(limit)
+      .lean()
       .exec();
 
     const totalCount = await this.commentModel.countDocuments(filter).exec();
@@ -45,6 +46,7 @@ export class CommentsQueryRepository {
         _id: id,
         deletedAt: null,
       })
+      .lean()
       .exec();
 
     if (!comment) {

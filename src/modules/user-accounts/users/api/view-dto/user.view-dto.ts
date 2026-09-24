@@ -1,4 +1,9 @@
-import { UserDocument } from '../../domain/user.entity';
+import type { Types } from 'mongoose';
+import type { User } from '../../domain/user.entity';
+
+type UserReadModel = Pick<User, 'login' | 'email' | 'createdAt'> & {
+  _id: Types.ObjectId;
+};
 
 export class UserViewDto {
   id: string;
@@ -6,7 +11,7 @@ export class UserViewDto {
   email: string;
   createdAt: Date;
 
-  static mapToView(user: UserDocument): UserViewDto {
+  static mapToView(user: UserReadModel): UserViewDto {
     const dto = new UserViewDto();
 
     dto.id = user._id.toString();

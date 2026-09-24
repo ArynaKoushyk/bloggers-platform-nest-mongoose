@@ -2,8 +2,8 @@ import { IQueryHandler, Query, QueryHandler } from '@nestjs/cqrs';
 import { PaginatedViewDto } from '../../../../../core/dto/base-paginated.view-dto';
 import { CommentViewDto } from '../../api/view-dto/comment.view-dto';
 import { GetCommentsQueryParams } from '../../api/input-dto/get-comments-query-params.input-dto';
-import { CommentsQueryRepository } from '../../infrastructure/query/comments.query-repository';
-import { PostsQueryRepository } from '../../../posts/infrastructure/query/posts.query-repository';
+import { CommentsQueryRepository } from '../../infrastructure/repositories/comments.query-repository';
+import { PostsQueryRepository } from '../../../posts/infrastructure/repositories/posts.query-repository';
 
 export class GetPostCommentsQuery extends Query<
   PaginatedViewDto<CommentViewDto[]>

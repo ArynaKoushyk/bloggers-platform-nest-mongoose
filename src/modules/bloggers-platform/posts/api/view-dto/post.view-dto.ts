@@ -1,6 +1,21 @@
-import { PostDocument } from '../../domain/post.entity';
+import type { Types } from 'mongoose';
+import type { Post } from '../../domain/post.entity';
 import { ExtendedLikesInfoViewDto } from '../../../likes/api/view-dto/extended-likes-info.view-dto';
 import { LikeStatus } from '../../../likes/domain/enums/like-status.enum';
+
+type PostReadModel = Pick<
+  Post,
+  | 'title'
+  | 'shortDescription'
+  | 'content'
+  | 'createdAt'
+  | 'blogId'
+  | 'blogName'
+  | 'likesCount'
+  | 'dislikesCount'
+> & {
+  _id: Types.ObjectId;
+};
 
 export class PostViewDto {
   id: string;
@@ -12,7 +27,7 @@ export class PostViewDto {
   blogName: string;
   extendedLikesInfo: ExtendedLikesInfoViewDto;
 
-  static mapToView(post: PostDocument): PostViewDto {
+  static mapToView(post: PostReadModel): PostViewDto {
     const dto = new PostViewDto();
 
     dto.id = post._id.toString();

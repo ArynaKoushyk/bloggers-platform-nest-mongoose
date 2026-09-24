@@ -1,7 +1,7 @@
 import { IQueryHandler, Query, QueryHandler } from '@nestjs/cqrs';
 import { GetBlogsQueryParams } from '../../api/input-dto/get-blogs-query-params.input-dto';
 import { BlogViewDto } from '../../api/view-dto/blog.view-dto';
-import { BlogsQueryRepository } from '../../infrastructure/query/blogs.query-repository';
+import { BlogsQueryRepository } from '../../infrastructure/repositories/blogs.query-repository';
 import { PaginatedViewDto } from '../../../../../core/dto/base-paginated.view-dto';
 
 export class GetBlogsQuery extends Query<PaginatedViewDto<BlogViewDto[]>> {

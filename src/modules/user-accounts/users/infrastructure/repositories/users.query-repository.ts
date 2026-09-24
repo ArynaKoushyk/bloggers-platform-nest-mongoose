@@ -55,6 +55,7 @@ export class UsersQueryRepository {
       .sort({ [sortBy]: sortDirection })
       .skip(skip)
       .limit(limit)
+      .lean()
       .exec();
 
     const totalCount = await this.userModel.countDocuments(filter).exec();
@@ -74,6 +75,7 @@ export class UsersQueryRepository {
         _id: id,
         deletedAt: null,
       })
+      .lean()
       .exec();
     if (!user) {
       throw new DomainException({
