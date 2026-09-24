@@ -1,4 +1,4 @@
-import { CommentsRepository } from '../../infrastructure/comments.repository';
+import { CommentsRepository } from '../../infrastructure/repositories/comments.repository';
 import { CommentAccessPolicy } from '../policies/comment-access.policy';
 import { UpdateCommentDto } from '../dto/update-comment.dto';
 import { UpdateCommentDomainDto } from '../../domain/dto/update-comment.domain.dto';

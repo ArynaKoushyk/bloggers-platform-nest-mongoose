@@ -1,7 +1,15 @@
 import { RegisterUserDto } from '../dto/register-user.dto';
-import { UsersRepository } from '../../../users/infrastructure/users.repository';
+import { UsersRepository } from '../../../users/infrastructure/repositories/users.repository';
 import { UsersFactory } from '../../../users/application/factories/users.factory';
-import { Command, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import {
+  Command,
+  CommandHandler,
+  EventBus,
+  ICommandHandler,
+} from '@nestjs/cqrs';
+import { ConfigService } from '@nestjs/config';
+import { randomUUID } from 'crypto';
+import { UserRegisteredEvent } from '../events/user-registered.event';
 
 export class RegisterUserCommand extends Command<void> {
   constructor(public readonly dto: RegisterUserDto) {
@@ -13,11 +21,29 @@ export class RegisterUserUseCase implements ICommandHandler<RegisterUserCommand>
   constructor(
     private usersRepository: UsersRepository,
     private readonly usersFactory: UsersFactory,
+    private readonly configService: ConfigService,
+    private readonly eventBus: EventBus,
   ) {}
 
   async execute({ dto }: RegisterUserCommand): Promise<void> {
-    const user = await this.usersFactory.createConfirmed(dto);
+    const confirmationCode = randomUUID();
+
+    const ttlSeconds = Number(
+      this.configService.getOrThrow<string>('CONFIRMATION_CODE_TTL_SECONDS'),
+    );
+
+    const confirmationCodeExpirationDate = new Date(
+      Date.now() + ttlSeconds * 1000,
+    );
+
+    const user = await this.usersFactory.createUnconfirmed(
+      dto,
+      confirmationCode,
+      confirmationCodeExpirationDate,
+    );
 
     await this.usersRepository.save(user);
+
+    this.eventBus.publish(new UserRegisteredEvent(dto.email, confirmationCode));
   }
 }

@@ -5,7 +5,7 @@ import {
   type UserDocument,
   type UserModelType,
 } from '../../domain/user.entity';
-import { UsersRepository } from '../../infrastructure/users.repository';
+import { UsersRepository } from '../../infrastructure/repositories/users.repository';
 import { PasswordHashAdapter } from '../../infrastructure/adapters/password-hash.adapter';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { CreateUserDomainDto } from '../../domain/dto/create-user.domain.dto';

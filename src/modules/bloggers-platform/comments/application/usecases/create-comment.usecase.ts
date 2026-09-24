@@ -2,8 +2,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Comment, type CommentModelType } from '../../domain/comment.entity';
 import { CreateCommentDto } from '../dto/create-comment.dto';
 import { UserContextDto } from '../../../../user-accounts/auth/application/dto/user-context.dto';
-import { CommentsRepository } from '../../infrastructure/comments.repository';
-import { PostsRepository } from '../../../posts/infrastructure/posts.repository';
+import { CommentsRepository } from '../../infrastructure/repositories/comments.repository';
+import { PostsRepository } from '../../../posts/infrastructure/repositories/posts.repository';
 import { CreateCommentDomainDto } from '../../domain/dto/create-comment.domain.dto';
 import { Command, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 

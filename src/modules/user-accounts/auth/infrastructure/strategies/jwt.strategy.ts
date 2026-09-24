@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { UserContextDto } from '../../application/dto/user-context.dto';
 import { ConfigService } from '@nestjs/config';
 import { AccessTokenPayload } from '../../application/types/access-token-payload.type';
-import { UsersRepository } from '../../../users/infrastructure/users.repository';
+import { UsersRepository } from '../../../users/infrastructure/repositories/users.repository';
 import { DomainException } from '../../../../../core/exceptions/domain.exception';
 import { DomainExceptionCode } from '../../../../../core/exceptions/domain-exception-code.enum';
 

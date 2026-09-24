@@ -1,6 +1,6 @@
-import { UsersRepository } from '../../infrastructure/users.repository';
+import { UsersRepository } from '../../infrastructure/repositories/users.repository';
 import { CreateUserDto } from '../dto/create-user.dto';
-import { Command, ICommandHandler } from '@nestjs/cqrs';
+import { Command, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UsersFactory } from '../factories/users.factory';
 
 export class CreateUserCommand extends Command<string> {
@@ -9,6 +9,7 @@ export class CreateUserCommand extends Command<string> {
   }
 }
 
+@CommandHandler(CreateUserCommand)
 export class CreateUserUseCase implements ICommandHandler<CreateUserCommand> {
   constructor(
     private readonly usersFactory: UsersFactory,

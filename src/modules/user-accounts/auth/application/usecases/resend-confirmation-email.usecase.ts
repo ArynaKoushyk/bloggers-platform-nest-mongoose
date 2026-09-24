@@ -1,24 +1,31 @@
 import { ConfigService } from '@nestjs/config';
 import { DomainExceptionCode } from '../../../../../core/exceptions/domain-exception-code.enum';
 import { DomainException } from '../../../../../core/exceptions/domain.exception';
-import { UsersRepository } from '../../../users/infrastructure/users.repository';
+import { UsersRepository } from '../../../users/infrastructure/repositories/users.repository';
 import { ResendRegistrationConfirmationEmailDto } from '../dto/resend-registration-confirmation-email.dto';
 import { randomUUID } from 'crypto';
-import { Command, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import {
+  Command,
+  CommandHandler,
+  EventBus,
+  ICommandHandler,
+} from '@nestjs/cqrs';
+import { ConfirmationCodeRenewedEvent } from '../events/confirmation-code-renewed.event';
 
-export class ResendRegistrationConfirmationCommand extends Command<void> {
+export class ResendConfirmationEmailCommand extends Command<void> {
   constructor(public readonly dto: ResendRegistrationConfirmationEmailDto) {
     super();
   }
 }
-@CommandHandler(ResendRegistrationConfirmationCommand)
-export class ResendRegistrationConfirmationUseCase implements ICommandHandler<ResendRegistrationConfirmationCommand> {
+@CommandHandler(ResendConfirmationEmailCommand)
+export class ResendConfirmationEmailUseCase implements ICommandHandler<ResendConfirmationEmailCommand> {
   constructor(
-    private usersRepository: UsersRepository,
+    private readonly usersRepository: UsersRepository,
     private readonly configService: ConfigService,
+    private readonly eventBus: EventBus,
   ) {}
 
-  async execute({ dto }: ResendRegistrationConfirmationCommand): Promise<void> {
+  async execute({ dto }: ResendConfirmationEmailCommand): Promise<void> {
     const { email } = dto;
     const user = await this.usersRepository.findByEmail(email);
     if (!user) {
@@ -63,5 +70,9 @@ export class ResendRegistrationConfirmationUseCase implements ICommandHandler<Re
     }
 
     await this.usersRepository.save(user);
+
+    this.eventBus.publish(
+      new ConfirmationCodeRenewedEvent(dto.email, newConfirmationCode),
+    );
   }
 }

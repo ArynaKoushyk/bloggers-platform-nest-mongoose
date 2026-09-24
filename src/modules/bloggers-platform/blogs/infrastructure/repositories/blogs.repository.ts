@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { Blog } from '../domain/blog.entity';
-import type { BlogDocument, BlogModelType } from '../domain/blog.entity';
+import { Blog } from '../../domain/blog.entity';
+import type { BlogDocument, BlogModelType } from '../../domain/blog.entity';
 import { InjectModel } from '@nestjs/mongoose';
-import { DomainException } from '../../../../core/exceptions/domain.exception';
-import { DomainExceptionCode } from '../../../../core/exceptions/domain-exception-code.enum';
+import { DomainException } from '../../../../../core/exceptions/domain.exception';
+import { DomainExceptionCode } from '../../../../../core/exceptions/domain-exception-code.enum';
 
 @Injectable()
 export class BlogsRepository {

@@ -1,9 +1,13 @@
-import { Command, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import {
+  Command,
+  CommandHandler,
+  ICommandHandler,
+} from '@nestjs/cqrs';
 import { DomainExceptionCode } from '../../../../../core/exceptions/domain-exception-code.enum';
 import { DomainException } from '../../../../../core/exceptions/domain.exception';
 import { PasswordHashAdapter } from '../../../users/infrastructure/adapters/password-hash.adapter';
 import { ResetPasswordError } from '../../../users/domain/enums/reset-password-error.enum';
-import { UsersRepository } from '../../../users/infrastructure/users.repository';
+import { UsersRepository } from '../../../users/infrastructure/repositories/users.repository';
 import { ResetPasswordDto } from '../dto/reset-password.dto';
 
 export class ResetPasswordCommand extends Command<void> {
@@ -15,8 +19,8 @@ export class ResetPasswordCommand extends Command<void> {
 @CommandHandler(ResetPasswordCommand)
 export class ResetPasswordUseCase implements ICommandHandler<ResetPasswordCommand> {
   constructor(
-    private usersRepository: UsersRepository,
-    private passwordHashAdapter: PasswordHashAdapter,
+    private readonly usersRepository: UsersRepository,
+    private readonly passwordHashAdapter: PasswordHashAdapter,
   ) {}
 
   async execute({ dto }: ResetPasswordCommand): Promise<void> {

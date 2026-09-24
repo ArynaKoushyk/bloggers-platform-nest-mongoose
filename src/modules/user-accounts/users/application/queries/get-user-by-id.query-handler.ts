@@ -9,7 +9,7 @@ export class GetUserByIdQuery extends Query<UserViewDto> {
 }
 
 @QueryHandler(GetUserByIdQuery)
-export class GetBlogByIdQueryHandler implements IQueryHandler<GetUserByIdQuery> {
+export class GetUserByIdQueryHandler implements IQueryHandler<GetUserByIdQuery> {
   constructor(private readonly usersQueryRepository: UsersQueryRepository) {}
 
   execute({ userId }: GetUserByIdQuery): Promise<UserViewDto> {

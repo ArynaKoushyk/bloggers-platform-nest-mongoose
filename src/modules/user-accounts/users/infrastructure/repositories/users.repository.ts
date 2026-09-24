@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { User, UserDocument, type UserModelType } from '../domain/user.entity';
+import { User, UserDocument, type UserModelType } from '../../domain/user.entity';
 import { InjectModel } from '@nestjs/mongoose';
-import { DomainException } from '../../../../core/exceptions/domain.exception';
-import { DomainExceptionCode } from '../../../../core/exceptions/domain-exception-code.enum';
+import { DomainException } from '../../../../../core/exceptions/domain.exception';
+import { DomainExceptionCode } from '../../../../../core/exceptions/domain-exception-code.enum';
 
 @Injectable()
 export class UsersRepository {
@@ -33,10 +33,10 @@ export class UsersRepository {
   }
 
   async findByLogin(login: string): Promise<UserDocument | null> {
-    return await this.UserModel.findOne({ login }).exec();
+    return await this.UserModel.findOne({ login, deletedAt: null }).exec();
   }
   async findByEmail(email: string): Promise<UserDocument | null> {
-    return await this.UserModel.findOne({ email }).exec();
+    return await this.UserModel.findOne({ email, deletedAt: null }).exec();
   }
 
   async findByLoginOrEmail(loginOrEmail: string): Promise<UserDocument | null> {

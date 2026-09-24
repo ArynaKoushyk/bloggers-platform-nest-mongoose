@@ -1,5 +1,5 @@
-import { PostsRepository } from '../../infrastructure/posts.repository';
-import { BlogsRepository } from '../../../blogs/infrastructure/blogs.repository';
+import { PostsRepository } from '../../infrastructure/repositories/posts.repository';
+import { BlogsRepository } from '../../../blogs/infrastructure/repositories/blogs.repository';
 import { UpdatePostDto } from '../dto/update-post.dto';
 import { UpdatePostDomainDto } from '../../domain/dto/update-post.domain.dto';
 import { Command, CommandHandler, ICommandHandler } from '@nestjs/cqrs';

@@ -4,9 +4,9 @@ import {
   Comment,
   CommentDocument,
   type CommentModelType,
-} from '../domain/comment.entity';
-import { DomainException } from '../../../../core/exceptions/domain.exception';
-import { DomainExceptionCode } from '../../../../core/exceptions/domain-exception-code.enum';
+} from '../../domain/comment.entity';
+import { DomainException } from '../../../../../core/exceptions/domain.exception';
+import { DomainExceptionCode } from '../../../../../core/exceptions/domain-exception-code.enum';
 
 @Injectable()
 export class CommentsRepository {

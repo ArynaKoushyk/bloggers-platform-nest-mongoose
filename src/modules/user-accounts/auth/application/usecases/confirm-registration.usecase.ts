@@ -2,7 +2,7 @@ import { Command, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { DomainExceptionCode } from '../../../../../core/exceptions/domain-exception-code.enum';
 import { DomainException } from '../../../../../core/exceptions/domain.exception';
 import { ConfirmEmailError } from '../../../users/domain/enums/confirm-email-error.enum';
-import { UsersRepository } from '../../../users/infrastructure/users.repository';
+import { UsersRepository } from '../../../users/infrastructure/repositories/users.repository';
 import { ConfirmRegistrationDto } from '../dto/confirm-registration.dto';
 
 export class ConfirmRegistrationCommand extends Command<void> {

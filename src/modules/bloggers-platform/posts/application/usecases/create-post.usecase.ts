@@ -1,6 +1,6 @@
 import { Post, type PostModelType } from '../../domain/post.entity';
-import { PostsRepository } from '../../infrastructure/posts.repository';
-import { BlogsRepository } from '../../../blogs/infrastructure/blogs.repository';
+import { PostsRepository } from '../../infrastructure/repositories/posts.repository';
+import { BlogsRepository } from '../../../blogs/infrastructure/repositories/blogs.repository';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { CreatePostDomainDto } from '../../domain/dto/create-post.domain.dto';

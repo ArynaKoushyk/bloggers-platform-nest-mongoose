@@ -4,6 +4,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EmailAdapter } from './infrastructure/adapters/email.adapter';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/adapters/handlebars.adapter';
 import { join } from 'node:path';
+import { SendConfirmationEmailHandler } from './application/event-handlers/send-confirmation-email.handler';
+import { SendRecoveryEmailHandler } from './application/event-handlers/send-recovery-email.handler';
+
+const eventHandlers = [SendConfirmationEmailHandler, SendRecoveryEmailHandler];
 
 @Module({
   imports: [
@@ -35,7 +39,6 @@ import { join } from 'node:path';
       }),
     }),
   ],
-  providers: [EmailAdapter],
-  exports: [EmailAdapter],
+  providers: [EmailAdapter, ...eventHandlers],
 })
 export class NotificationsModule {}

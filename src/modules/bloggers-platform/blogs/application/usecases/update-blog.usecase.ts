@@ -1,4 +1,4 @@
-import { BlogsRepository } from '../../infrastructure/blogs.repository';
+import { BlogsRepository } from '../../infrastructure/repositories/blogs.repository';
 import { UpdateBlogDto } from '../dto/update-blog.dto';
 import { UpdateBlogDomainDto } from '../../domain/dto/update-blog.domain.dto';
 import { Command, CommandHandler, ICommandHandler } from '@nestjs/cqrs';

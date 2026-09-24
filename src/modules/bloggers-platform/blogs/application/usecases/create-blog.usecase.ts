@@ -1,7 +1,7 @@
 import { CreateBlogDto } from '../dto/create-blog.dto';
 import { CreateBlogDomainDto } from '../../domain/dto/create-blog.domain.dto';
 import { Blog, type BlogModelType } from '../../domain/blog.entity';
-import { BlogsRepository } from '../../infrastructure/blogs.repository';
+import { BlogsRepository } from '../../infrastructure/repositories/blogs.repository';
 import { InjectModel } from '@nestjs/mongoose';
 import { Command, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 

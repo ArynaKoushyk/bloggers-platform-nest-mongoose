@@ -1,4 +1,4 @@
-import { BlogsRepository } from '../../infrastructure/blogs.repository';
+import { BlogsRepository } from '../../infrastructure/repositories/blogs.repository';
 import { Command, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 export class DeleteBlogCommand extends Command<void> {

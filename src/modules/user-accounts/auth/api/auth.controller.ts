@@ -23,10 +23,10 @@ import { LoginSuccessViewDto } from './view-dto/login-success.view-dto';
 import { LoginInputDto } from './input-dto/login.input-dto';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { RegisterUserCommand } from '../application/usecases/register-user.usecase';
-import { LoginCommand } from '../application/usecases/login-user.usecase';
-import { ResendRegistrationConfirmationCommand } from '../application/usecases/resend-registration-confirmation-email.usecase';
+import { LoginUserCommand } from '../application/usecases/login-user.usecase';
+import { ResendConfirmationEmailCommand } from '../application/usecases/resend-confirmation-email.usecase';
 import { ConfirmRegistrationCommand } from '../application/usecases/confirm-registration.usecase';
-import { StartPasswordRecoveryCommand } from '../application/usecases/start-password-recovery.usecase';
+import { RequestPasswordRecoveryCommand } from '../application/usecases/request-password-recovery.usecase';
 import { ResetPasswordCommand } from '../application/usecases/reset-password.usecase';
 import { GetCurrentUserQuery } from '../application/queries/get-current-user.query-handler';
 
@@ -54,7 +54,7 @@ export class AuthController {
       dto.password,
     );
 
-    return this.commandBus.execute(new LoginCommand(user.id));
+    return this.commandBus.execute(new LoginUserCommand(user.id));
   }
 
   @Post('registration-email-resending')
@@ -62,9 +62,7 @@ export class AuthController {
   resendRegistrationConfirmationEmail(
     @Body() dto: ResendRegistrationConfirmationEmailInputDto,
   ): Promise<void> {
-    return this.commandBus.execute(
-      new ResendRegistrationConfirmationCommand(dto),
-    );
+    return this.commandBus.execute(new ResendConfirmationEmailCommand(dto));
   }
 
   @Post('registration-confirmation')
@@ -78,7 +76,7 @@ export class AuthController {
   startPasswordRecovery(
     @Body() dto: StartPasswordRecoveryInputDto,
   ): Promise<void> {
-    return this.commandBus.execute(new StartPasswordRecoveryCommand(dto));
+    return this.commandBus.execute(new RequestPasswordRecoveryCommand(dto));
   }
 
   @Post('new-password')
